@@ -1,0 +1,23 @@
+{
+  "name": "smart-buoy-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moritz157/smart-buoy.git"
+  },
+  "author": "moritz157",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/moritz157/smart-buoy/issues"
+  },
+  "homepage": "https://github.com/moritz157/smart-buoy#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mysql": "^2.15.0"
+  }
+}
