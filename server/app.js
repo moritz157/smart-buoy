@@ -29,7 +29,18 @@ app.get("/", function(req, res){
     })
 
     //res.send(JSON.stringify(newSession));
-})
+});
+
+app.get("/stations", function(req, res){
+    mysql.getAllStations()
+    .then((result) => {
+        res.send(result);
+    })
+    .catch((err) => {
+        console.log(err);
+        res.send(err);
+    })
+});
 
 
 app.listen(8888, function(){

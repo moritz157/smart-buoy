@@ -46,7 +46,7 @@ module.exports = {
     //Getters
     getUser: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM users WHERE id = '"+id+"'";
+            var sql = "SELECT * FROM users WHERE id = '"+id+"' OR username = '"+id+"'";
             con.query(sql, function(err, result){
                 if(err) {reject(err);}
                 else {
@@ -77,7 +77,7 @@ module.exports = {
                 if(err) {reject(err);}
                 else {
                     result = result[0];
-                    var measurement = new Measurement(result.station_id, result.type, result.value, result.longitude, result.latitude, result.timestatmp, result.id)
+                    var measurement = new Measurement(result.station_id, result.type, result.value, result.timestatmp, result.id)
                     resolve(measurement);
                 }
             })
@@ -90,8 +90,28 @@ module.exports = {
                 if(err) {reject(err);}
                 else {
                     result = result[0];
-                    var station = new Station(result.name, result.creator_id, result.id, result.created, result.last_updated, result.enabled);
+                    var station = new Station(result.name, result.creator_id, result.id, result.created, result.last_updated, result.enabled, result.longitude, result.latitude);
                     resolve(station);
+                }
+            })
+        });
+    },
+    getAllStations: function(){
+        return new Promise(function(resolve, reject){
+            con.query("SELECT * FROM stationen", function(err, result){
+                if(err){reject(err)}
+                else{resolve(result)}
+            })
+        });
+    },
+
+    deleteSession: function(id){
+        return new Promise(function(resolve, reject){
+            var sql = "DELETE FROM `sessions` WHERE `sessions`.`session_id` = '"+id+"'";
+            con.query(sql, function(err, result){
+                if(err) {reject(err)}
+                else{
+                    resolve(result);
                 }
             })
         });
