@@ -83,6 +83,20 @@ app.post("/register", function(req, res){
     }
 });
 
+app.post("/logout", function(req, res){
+    if(req.body.session_id){
+        auth.logout(req.body.session_id)
+        .then(() => {
+            res.send("Deleted");
+        })
+        .catch((err) => {
+            res.send(err)
+        })
+    }else{
+        res.send("No session_id")
+    }
+})
+
 app.listen(8888, function(){
     console.log("Server started on Port: 8888");
 });
