@@ -91,7 +91,7 @@ module.exports = {
     },
     getStation: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM stationen WHERE id = '"+id+"'";
+            var sql = "SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen WHERE id = '"+id+"'";
             con.query(sql, function(err, result){
                 if(err) {reject(err);}
                 else {
@@ -104,7 +104,7 @@ module.exports = {
     },
     getAllStations: function(){
         return new Promise(function(resolve, reject){
-            con.query("SELECT * FROM stationen", function(err, result){
+            con.query("SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen", function(err, result){
                 if(err){reject(err)}
                 else{resolve(result)}
             })
