@@ -21,26 +21,32 @@ module.exports = {
 
     //Saves any JSON Object to the specified table as long as there are the required fields in the JSON object
     saveJson: function(table, json){
-        if(connected){
-            var keys = [];
-            var values = [];
-            for(var key in json){
-                if(json[key]!=undefined){
-                    keys.push(key);
-                    values.push(json[key]);
+        return new Promise(function(resolve, reject){
+            if(connected){
+                var keys = [];
+                var values = [];
+                for(var key in json){
+                    if(json[key]!=undefined){
+                        keys.push(key);
+                        values.push(json[key]);
+                    }
                 }
+                var sql = "INSERT INTO "+table+"("+keys.toString()+") VALUES (";
+                for(var value in values){
+                    if(value>0){sql+=", "}
+                    sql+="'"+values[value]+"'";
+                }
+                sql+=")";
+                con.query(sql, function(err, result){
+                    if(err) {
+                        reject(err);
+                    }else{
+                        resolve(result);
+                    }
+                    console.log("Record inserted:", result);
+                })
             }
-            var sql = "INSERT INTO "+table+"("+keys.toString()+") VALUES (";
-            for(var value in values){
-                if(value>0){sql+=", "}
-                sql+="'"+values[value]+"'";
-            }
-            sql+=")";
-            con.query(sql, function(err, result){
-                if(err) throw err;
-                console.log("Record inserted:", result);
-            })
-        }
+        });
     },
 
     //Getters
@@ -51,7 +57,7 @@ module.exports = {
                 if(err) {reject(err);}
                 else {
                     result = result[0];
-                    var user = new User(result.id, result.username, result.password, result.salt, result.permission_level, result.activated)
+                    var user = new User(result.username, result.password, result.salt, result.permission_level, result.activated, result.id)
                     resolve(user);
                 }
             })

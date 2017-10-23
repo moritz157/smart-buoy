@@ -8,8 +8,9 @@ module.exports = {
             mysql.getUser(user)
             .then((result) => {
                 const hash = crypto.createHash('sha256');               
-                hash.update(password+result.hash); 
+                hash.update(password+result.salt); 
                 var enteredPass = hash.digest('hex');
+                console.log("Result:",result, "Entered pass:", enteredPass)
                 if(enteredPass==result.password && user == result.username){
                     var newSession = new Session(result.id, ip);
                     mysql.saveJson("sessions", newSession);
@@ -29,7 +30,7 @@ module.exports = {
         const hash = crypto.createHash('sha256');               
         hash.update(password+salt); 
 
-        var newUser = new User(user, has.digest('hex'), salt, 0, true);
+        var newUser = new User(user, hash.digest('hex'), salt, 0, true);
         return mysql.saveJson("users", newUser);
     },
     logout: function(session_id){

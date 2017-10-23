@@ -1,6 +1,13 @@
 var express = require("express");
 var app = express();
 
+const bodyParser = require('body-parser');
+// parse application/x-www-form-urlencoded
+//app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
 var mysql = require("./lib/mysql-adapter.js");
 mysql.connect();
 
@@ -42,6 +49,39 @@ app.get("/stations", function(req, res){
     })
 });
 
+//Auth endpoints
+const auth = require("./lib/auth.js");
+
+app.post("/login", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if(req.body.username && req.body.password){
+        auth.login(req.body.username, req.body.password, ip)
+        .then((result) => {
+            res.send({"session_id":result});
+        })
+        .catch((err) => {
+            res.status(505).send(err)
+        })
+    }else{
+        res.status(400).send("Bad request");
+    }
+});
+
+app.post("/register", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log("Register request. IP:", ip);
+    if(req.body.username && req.body.password){
+        auth.register(req.body.username, req.body.password)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            res.status(505).send(err)
+        })
+    }else{
+        res.status(400).send("Bad request");
+    }
+});
 
 app.listen(8888, function(){
     console.log("Server started on Port: 8888");
