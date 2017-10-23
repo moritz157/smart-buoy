@@ -55,6 +55,21 @@ app.get("/stations", function(req, res){
     })
 });
 
+app.post("/stationAuthToken", function(req, res){
+    if(req.body.session_id && req.body.station){
+        mysql.getStationAuthToken(req.body.station, req.body.session_id)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            throw err;
+            res.send("Error found:" + err);
+        })
+    }else{
+        res.send("Bad request");
+    }
+})
+
 //Auth endpoints
 const auth = require("./lib/auth.js");
 
@@ -101,7 +116,7 @@ app.post("/logout", function(req, res){
     }else{
         res.send("No session_id")
     }
-})
+});
 
 app.listen(8888, function(){
     console.log("Server started on Port: 8888");

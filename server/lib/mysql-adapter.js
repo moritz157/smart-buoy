@@ -10,6 +10,8 @@ var con = mysql.createConnection({
     database: "smartbuoy"
 });
 var connected = false;
+const auth = require("./auth.js");
+
 module.exports = {
     connect: function(){
         con.connect(function(err){
@@ -65,9 +67,9 @@ module.exports = {
     },
     getSession: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM sessions WHERE id = '"+id+"'";
+            var sql = "SELECT * FROM sessions WHERE session_id = '"+id+"'";
             con.query(sql, function(err, result){
-                if(err) {reject(err);}
+                if(err) {console.log("Err:",err);reject(err);}
                 else {
                     result = result[0];
                     var session = new Session(result.user_id, result.ip, result.session_id, result.created);
@@ -108,6 +110,20 @@ module.exports = {
                 if(err){reject(err)}
                 else{resolve(result)}
             })
+        });
+    },
+    getStationAuthToken: function(station_id, session_id){
+        return new Promise(function(resolve, reject){
+            auth.validateSessionId(session_id)
+            .then((result) => {
+                con.query("SELECT creator_id, token FROM stationen WHERE id = '"+station_id+"'", function(err, result){
+                    if(err){reject(err)}
+                    else{resolve({"token":result[0].token});}
+                });
+            })
+            .catch((err) => {
+                reject(err);
+            });
         });
     },
 

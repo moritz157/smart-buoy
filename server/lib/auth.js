@@ -35,5 +35,21 @@ module.exports = {
     },
     logout: function(session_id){
         return mysql.deleteSession(session_id);
+    },
+    validateSessionId: function(session_id){
+        return new Promise(function(resolve, reject){
+            const mysql = require("./mysql-adapter.js"); // <-- Weird thing: the outer mysql-constant is not injected here so I have to declare it again inside the promise
+            if(session_id){
+                //console.log(mysql.getAllStations);
+                mysql.getSession(session_id).then((result) => {
+                    resolve(result);
+                })
+                .catch((err) => {
+                    reject(err);
+                })
+            }else{
+                reject("No session_id")
+            }
+        });
     }
 }
