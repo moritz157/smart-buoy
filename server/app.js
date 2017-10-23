@@ -24,17 +24,23 @@ app.get("/", function(req, res){
     var newMeasurement = new Measurement(1, MeasurementTypes.AIR_TEMPERATURE, 24.4, 49.921875, -52.482780222078205);
     //mysql.saveJson("measurement_values", newMeasurement);
 
-    var newStation = new Station("Hello", 1);
-    //mysql.saveJson("stationen", newStation);
+    /*var newStation = new Station("AuthToken", 5);
+    mysql.saveJson("stationen", newStation)
+    .then((result)=>{
+        console.log(result);
+    })
+    .catch((err) => {
+        console.log(err);
+    });*/
 
     //var newUser = new User(1);
-    mysql.getUser(1).then((result) => {
+    /*mysql.getUser(1).then((result) => {
         res.send(JSON.stringify(result));
     })
     .catch((err) => {
         res.send(err);
-    })
-
+    })*/
+    res.send("a")
     //res.send(JSON.stringify(newSession));
 });
 

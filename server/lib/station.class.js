@@ -6,5 +6,6 @@ module.exports = class {
         if(created){this.created = created}
         if(last_updated){this.last_updated = last_updated}
         if(enabled){this.enabled = enabled}
+        this.token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
     }
 }
