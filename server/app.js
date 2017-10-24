@@ -159,3 +159,9 @@ app.post("/submitMeasurement", function(req, res){
 app.listen(8888, function(){
     console.log("Server started on Port: 8888");
 });
+
+var web = express();
+web.use('/',express.static("../web/"));
+web.listen(7777, function(){
+    console.log("Webserver started on Port: 7777");
+})

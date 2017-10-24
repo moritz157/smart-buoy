@@ -1,0 +1,26 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+}
+
+header {
+    height: 1.5em;
+}
+
+#main {
+    position: relative;
+    width: 100%;
+    height: calc(100% - 1.5em);
+    display: flex;
+}
+
+#map {
+    position: relative;
+    width: calc(100% - 14em);
+}
+
+#sidebar {
+    height: 100%;
+    width: 14em;
+    background-color: #f1f1f1;
+}
