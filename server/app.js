@@ -68,7 +68,22 @@ app.post("/stationAuthToken", function(req, res){
     }else{
         res.send("Bad request");
     }
-})
+});
+
+app.get("/measurements/:station", function(req, res){
+    if(req.params.station){
+        console.log("Station:", req.params.station)
+        mysql.listMeasurements(req.params.station)
+        .then((result) => {
+            res.send(result);
+        })
+        .catch((err) => {
+            res.send("Error:", err);
+        })
+    }else{
+        res.send("Bad request");
+    }
+});
 
 //Auth endpoints
 const auth = require("./lib/auth.js");
@@ -115,6 +130,29 @@ app.post("/logout", function(req, res){
         })
     }else{
         res.send("No session_id")
+    }
+});
+
+//Endpoints for stations
+app.post("/submitMeasurement", function(req, res){
+    if(req.body.token && req.body.measurements){
+        auth.validateAuthToken(req.body.token)
+        .then((result) => {
+            mysql.insertMeasurements(result.id, req.body.measurements)
+            .then(() => {
+                res.send("Inserted");
+            })
+            .catch((err) => {
+                console.log(err);
+                res.send("Error:"+err);
+            });
+        })
+        .catch((err) => {
+            res.send("Error:"+err);
+
+        })
+    }else{
+        res.send("Bad request");
     }
 });
 

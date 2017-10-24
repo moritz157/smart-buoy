@@ -51,5 +51,17 @@ module.exports = {
                 reject("No session_id")
             }
         });
+    },
+    validateAuthToken: function(token){
+        return new Promise(function(resolve, reject){
+            const mysql = require("./mysql-adapter.js"); 
+            if(token){
+                mysql.getStationFromToken(token)
+                .then((result) => {resolve(result)})
+                .catch((err) => reject(err));
+            }else{
+                reject("No token or station_id");
+            }
+        });
     }
 }

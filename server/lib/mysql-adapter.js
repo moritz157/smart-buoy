@@ -7,7 +7,8 @@ var con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
-    database: "smartbuoy"
+    database: "smartbuoy",
+    multipleStatements: true
 });
 var connected = false;
 const auth = require("./auth.js");
@@ -124,6 +125,79 @@ module.exports = {
             .catch((err) => {
                 reject(err);
             });
+        });
+    },
+    getStationFromToken: function(token){
+        return new Promise(function(resolve, reject){
+            con.query("SELECT * FROM stationen WHERE token = '"+token+"'", function(err, result){
+                if(err){reject(err)}
+                else{
+                    if(result.length==0){
+                        reject("Invalid")
+                    }else{
+                        resolve(result[0]);
+                    }
+                }
+            });
+        });
+    },
+    insertMeasurements: function(station_id, measurements){
+        return new Promise(function(resolve, reject){
+            var sql = "";
+            for(var i=0;i<measurements.length;i++){
+                var keys = [];
+                var values = [];
+                for(var key in measurements[i]){
+                    if(measurements[i][key]!=undefined){
+                        keys.push(key);
+                        values.push(measurements[i][key]);
+                    }
+                }
+                keys.push("station_id");
+                values.push(station_id);
+                sql += "INSERT INTO measurement_values ("+keys.toString()+") VALUES (";
+                for(var value in values){
+                    if(value>0){sql+=", "}
+                    sql+="'"+values[value]+"'";
+                }
+                sql+=");";
+            }
+            console.log(sql);
+            con.query(sql, function(err, result){
+                if(err) {reject(err)}
+                else{
+                    resolve(result);
+                }
+            });
+        });
+    },
+    listMeasurements: function(station_id){
+        return new Promise(function(resolve, reject){
+            if(station_id){
+                var sql = "SELECT * FROM `measurement_values` WHERE station_id='"+station_id+"' ORDER BY timestamp ASC";
+                console.log("SQL: "+sql)
+                con.query(sql, function(err, result){
+                    if(err){
+                        reject(err);
+                    }else{
+                        console.log("Result:", result);
+                        var measurements=[];
+                        for(var i=0;i<result.length;i++){
+                            if(measurements.length==0 || new Date(measurements[measurements.length-1].timestamp).getTime()!=new Date(result[i].timestamp).getTime()){
+                                if(measurements.length>0){
+                                    console.log(measurements[measurements.length-1].timestamp, " != ", result[i].timestamp);
+                                    console.log(measurements[measurements.length-1].timestamp!==result[i].timestamp);
+                                }
+                                measurements.push({"timestamp":result[i].timestamp});
+                            }
+                            measurements[measurements.length-1][result[i].type]=result[i].value;
+                        }
+                        resolve(measurements);
+                    }
+                });
+            }else{
+                reject("No station id");
+            }
         });
     },
 
