@@ -22,33 +22,23 @@ app.use(function(req, res, next){
     next();
 })
 
+/**
+ * @api {get} / root
+ * @apiGroup main
+ * 
+ */
 app.get("/", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    var newSession = new Session(0, ip);
-    //mysql.saveJson("sessions", newSession);
-    var newMeasurement = new Measurement(1, MeasurementTypes.AIR_TEMPERATURE, 24.4, 49.921875, -52.482780222078205);
-    //mysql.saveJson("measurement_values", newMeasurement);
-
-    /*var newStation = new Station("AuthToken", 5);
-    mysql.saveJson("stationen", newStation)
-    .then((result)=>{
-        console.log(result);
-    })
-    .catch((err) => {
-        console.log(err);
-    });*/
-
-    //var newUser = new User(1);
-    /*mysql.getUser(1).then((result) => {
-        res.send(JSON.stringify(result));
-    })
-    .catch((err) => {
-        res.send(err);
-    })*/
-    res.send("a")
-    //res.send(JSON.stringify(newSession));
+    res.send("smart-buoy<br>Status: Online");
 });
 
+/**
+ * @api {get} /stations getStations
+ * @apiGroup main
+ * @apiDescription Get all stations
+ * 
+ * @apiGroup main
+ */
 app.get("/stations", function(req, res){
     mysql.getAllStations()
     .then((result) => {
@@ -60,6 +50,14 @@ app.get("/stations", function(req, res){
     })
 });
 
+/**
+ * @api {post} /stationAuthToken getAuthToken
+ * @apiGroup main
+ * @apiDescription Get the auth token of a specified station you own
+ * 
+ * @apiParam {String} session_id Your session_id
+ * @apiParam {Number} station The station's id
+ */
 app.post("/stationAuthToken", function(req, res){
     if(req.body.session_id && req.body.station){
         mysql.getStationAuthToken(req.body.station, req.body.session_id)
@@ -75,6 +73,13 @@ app.post("/stationAuthToken", function(req, res){
     }
 });
 
+/**
+ * @api {get} /measurements/:station getMeasurements
+ * @apiGroup main
+ * @apiDescription Get all measurements of a specified station
+ * 
+ * @apiParam {Number} station The station's id
+ */
 app.get("/measurements/:station", function(req, res){
     if(req.params.station){
         console.log("Station:", req.params.station)
@@ -93,6 +98,13 @@ app.get("/measurements/:station", function(req, res){
 //Auth endpoints
 const auth = require("./lib/auth.js");
 
+/**
+ * @api {post} /login login
+ * @apiGroup auth
+ * 
+ * @apiParam {String} username Your username
+ * @apiParam {String} password Your password (Note: If you build your own client, please use encryption when transmitting the credentials)
+ */
 app.post("/login", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.username && req.body.password){
@@ -108,6 +120,13 @@ app.post("/login", function(req, res){
     }
 });
 
+/**
+ * @api {post} /register register
+ * @apiGroup auth
+ * 
+ * @apiParam {String} username Your username
+ * @apiParam {String} password Your password
+ */
 app.post("/register", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     console.log("Register request. IP:", ip);
@@ -124,6 +143,12 @@ app.post("/register", function(req, res){
     }
 });
 
+/**
+ * @api {post} /logout logout
+ * @apiGroup auth
+ * 
+ * @apiParam {String} session_id Your session id
+ */
 app.post("/logout", function(req, res){
     if(req.body.session_id){
         auth.logout(req.body.session_id)
@@ -139,6 +164,14 @@ app.post("/logout", function(req, res){
 });
 
 //Endpoints for stations
+
+/**
+ * @api {post} /submitMeasurement submitMeasurement
+ * @apiGroup stations
+ * 
+ * @apiParam {String} token The station's auth token
+ * @apiParam {Object[]} measurements The measurements
+ */
 app.post("/submitMeasurement", function(req, res){
     if(req.body.token && req.body.measurements){
         auth.validateAuthToken(req.body.token)
