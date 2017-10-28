@@ -5,13 +5,30 @@ body {
 }
 
 header {
-    height: 1.5em;
+    height: 2.6em;
+}
+
+header nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+header nav .left, header nav .right {
+    display: flex;
+    position: relative;
+    padding: 12px;
+}
+
+a {
+    text-decoration: none !important;
+    color: black;
 }
 
 #main {
     position: relative;
     width: 100%;
-    height: calc(100% - 1.5em);
+    height: calc(100% - 2.6em);
     display: flex;
 }
 

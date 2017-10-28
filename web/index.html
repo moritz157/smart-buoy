@@ -15,12 +15,19 @@
     </head>
     <body>
         <header>
-            smart buoy
+            <nav>
+                <div class="left">
+                    <span>smart buoy</span>
+                </div>
+                <div class="right">
+                    <a href="https://github.com/moritz157/smart-buoy" target="_blank">GitHub</a>
+                </div>
+            </nav>
         </header>
 
         <!--Openstreetmap-->
         <div id="main">
-            <div id="map">
+            <div id="map" onclick="clearCards(true)">
             </div>
             <div id="sidebar">
                 <span id="noSelection">Keine Station ausgewählt</span>
