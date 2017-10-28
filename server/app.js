@@ -17,6 +17,11 @@ var Measurement = require("./lib/measurement.class.js");
 var Station = require("./lib/station.class.js");
 const MeasurementTypes = require("./lib/measurement.types.js");
 
+app.use(function(req, res, next){
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:7777");
+    next();
+})
+
 app.get("/", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     var newSession = new Session(0, ip);

@@ -1,6 +1,7 @@
 body {
     margin: 0px;
     overflow: hidden;
+    font-family: Arial;
 }
 
 header {
@@ -16,11 +17,55 @@ header {
 
 #map {
     position: relative;
-    width: calc(100% - 14em);
+    width: calc(100% - 15em);
 }
 
 #sidebar {
     height: 100%;
-    width: 14em;
+    min-width: 15em;
+    max-width: 15em;
     background-color: #f1f1f1;
+    text-align: center;
+}
+
+#sidebar #noSelection {
+    font-weight: bold;
+    color: #a7a7a7;
+    top: 49%;
+    position: relative;
+}
+
+i.material-icons {
+    cursor: pointer;
+}
+
+.card {
+    background-color: white;
+    border-radius: 5px;
+    margin: 5px;
+    border: 1px solid #dadada;
+}
+
+.card.closed .card-content{
+    display: none;
+}
+
+.card.closed .card-header{
+    border-bottom: none;
+}
+
+.card-header {
+    border-bottom: 1px solid #dadada;
+    padding: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.card-header span {
+    top: 3px;
+    position: relative;
+}
+
+.card-content {
+    padding: 5px;
 }
