@@ -26,21 +26,16 @@ module.exports = {
     saveJson: function(table, json){
         return new Promise(function(resolve, reject){
             if(connected){
-                var keys = [];
+                /*var keys = [];
                 var values = [];
                 for(var key in json){
                     if(json[key]!=undefined){
                         keys.push(key);
                         values.push(json[key]);
                     }
-                }
-                var sql = "INSERT INTO "+table+"("+keys.toString()+") VALUES (";
-                for(var value in values){
-                    if(value>0){sql+=", "}
-                    sql+="'"+values[value]+"'";
-                }
-                sql+=")";
-                con.query(sql, function(err, result){
+                }*/
+                var sql = "INSERT INTO "+table+" SET ?";
+                con.query(sql, json, function(err, result){
                     if(err) {
                         reject(err);
                     }else{
@@ -55,7 +50,7 @@ module.exports = {
     //Getters
     getUser: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM users WHERE id = '"+id+"' OR username = '"+id+"'";
+            var sql = "SELECT * FROM users WHERE id = "+con.escape(id)+" OR username = "+con.escape(id);
             con.query(sql, function(err, result){
                 if(err) {reject(err);}
                 else {
@@ -68,7 +63,7 @@ module.exports = {
     },
     getSession: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM sessions WHERE session_id = '"+id+"'";
+            var sql = "SELECT * FROM sessions WHERE session_id = "+con.escape(id)+"";
             con.query(sql, function(err, result){
                 if(err) {console.log("Err:",err);reject(err);}
                 else {
@@ -81,7 +76,7 @@ module.exports = {
     },
     getMeasurement: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM measurement_values WHERE id = '"+id+"'";
+            var sql = "SELECT * FROM measurement_values WHERE id = "+con.escape(id)+"";
             con.query(sql, function(err, result){
                 if(err) {reject(err);}
                 else {
@@ -94,7 +89,7 @@ module.exports = {
     },
     getStation: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen WHERE id = '"+id+"'";
+            var sql = "SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen WHERE id = "+con.escape(id)+"";
             con.query(sql, function(err, result){
                 if(err) {reject(err);}
                 else {
@@ -117,7 +112,7 @@ module.exports = {
         return new Promise(function(resolve, reject){
             auth.validateSessionId(session_id)
             .then((result) => {
-                con.query("SELECT creator_id, token FROM stationen WHERE id = '"+station_id+"'", function(err, result){
+                con.query("SELECT creator_id, token FROM stationen WHERE id = "+con.escape(station_id), function(err, result){
                     if(err){reject(err)}
                     else{resolve({"token":result[0].token});}
                 });
@@ -129,7 +124,7 @@ module.exports = {
     },
     getStationFromToken: function(token){
         return new Promise(function(resolve, reject){
-            con.query("SELECT * FROM stationen WHERE token = '"+token+"'", function(err, result){
+            con.query("SELECT * FROM stationen WHERE token = "+con.escape(token), function(err, result){
                 if(err){reject(err)}
                 else{
                     if(result.length==0){
@@ -154,11 +149,11 @@ module.exports = {
                     }
                 }
                 keys.push("station_id");
-                values.push(station_id);
+                values.push(con.escape(station_id));
                 sql += "INSERT INTO measurement_values ("+keys.toString()+") VALUES (";
                 for(var value in values){
                     if(value>0){sql+=", "}
-                    sql+="'"+values[value]+"'";
+                    sql+=con.escape(values[value]);
                 }
                 sql+=");";
             }
@@ -174,7 +169,7 @@ module.exports = {
     listMeasurements: function(station_id){
         return new Promise(function(resolve, reject){
             if(station_id){
-                var sql = "SELECT * FROM `measurement_values` WHERE station_id='"+station_id+"' ORDER BY timestamp ASC";
+                var sql = "SELECT * FROM `measurement_values` WHERE station_id="+con.escape(station_id)+" ORDER BY timestamp ASC";
                 console.log("SQL: "+sql)
                 con.query(sql, function(err, result){
                     if(err){
@@ -203,7 +198,7 @@ module.exports = {
 
     deleteSession: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "DELETE FROM `sessions` WHERE `sessions`.`session_id` = '"+id+"'";
+            var sql = "DELETE FROM `sessions` WHERE `sessions`.`session_id` = "+con.escape(id);
             con.query(sql, function(err, result){
                 if(err) {reject(err)}
                 else{
