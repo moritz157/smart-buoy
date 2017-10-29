@@ -17,6 +17,8 @@ var Measurement = require("./lib/measurement.class.js");
 var Station = require("./lib/station.class.js");
 const MeasurementTypes = require("./lib/measurement.types.js");
 
+var logger = require("./lib/log.js").logger;
+
 app.use(function(req, res, next){
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:7777");
     next();
@@ -29,6 +31,11 @@ app.use(function(req, res, next){
  */
 app.get("/", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+
+    logger.log({
+        level: 'info',
+        message: '"/" Requested. IP: '+ip
+    })
     res.send("smart-buoy<br>Status: Online");
 });
 
@@ -40,11 +47,20 @@ app.get("/", function(req, res){
  * @apiGroup main
  */
 app.get("/stations", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     mysql.getAllStations()
     .then((result) => {
+        logger.log({
+            level: 'info',
+            message: '"/stations" requested. No errors. IP: '+ip
+        })
         res.send(result);
     })
     .catch((err) => {
+        logger.log({
+            level: 'error',
+            message: '"/stations" requested. An error occured. IP: '+ip+" Error: "+err
+        })
         console.log(err);
         res.send(err);
     })
