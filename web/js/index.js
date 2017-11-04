@@ -2,6 +2,8 @@ var stations;
 var measurements = [{"0":44.082,"timestamp":"2017-10-24T18:11:04.000Z"},{"0":44.082,"timestamp":"2017-10-24T18:14:14.000Z"},{"0":44.082,"timestamp":"2017-10-24T18:14:46.000Z"},{"0":44.082,"1":13.253,"2":83.235,"timestamp":"2017-10-24T19:00:17.000Z"}];
 var mymap = L.map('map').setView([53.574257, 10.002596], 11);
 var selected = undefined;
+var colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#66bb6a", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043"];
+
 var restEndpoint = "";
 if(location.origin == "http://localhost:7777"){
     restEndpoint = "http://localhost:8888";
@@ -117,11 +119,16 @@ function addCard(title, measurements, type){
     card.innerHTML = inner;
     $("#sidebar").append(card);
 
+    var lineColor = getRandomColor();
+    var backgroundColor = hexToRgba(lineColor, 0.5);
+    console.log(backgroundColor);
     var data = {
         labels: [],
         datasets:[
             {
                 "label":title, 
+                borderColor:lineColor,
+                backgroundColor: backgroundColor,
                 data: []
             }
         ]
@@ -158,4 +165,23 @@ function addCard(title, measurements, type){
         data: data,
         options: options
     });
+}
+
+function getRandomColor(){
+    return colors[getRandomInt(0, colors.length-1)]
+}
+
+function getRandomInt(min, max) {
+min = Math.ceil(min);
+max = Math.floor(max);
+return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function hexToRgba(hex, opacity) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? `
+        rgba(`+parseInt(result[1], 16)+`,
+        `+parseInt(result[2], 16)+`,
+        `+parseInt(result[3], 16)+`,
+        `+opacity+`)` : null;
 }
