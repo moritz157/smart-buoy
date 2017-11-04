@@ -20,7 +20,7 @@ const MeasurementTypes = require("./lib/measurement.types.js");
 var logger = require("./lib/log.js").logger;
 
 app.use(function(req, res, next){
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:7777");
+    res.setHeader("Access-Control-Allow-Origin", "*");
     next();
 })
 

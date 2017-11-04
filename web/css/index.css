@@ -86,3 +86,33 @@ i.material-icons {
 .card-content {
     padding: 5px;
 }
+
+#close-wrapper {
+    display: none;
+}
+
+/*Responsive*/
+@media only screen and (max-width: 529px) {
+    #close-wrapper {
+        display: flex;
+        flex-direction: row-reverse;
+        margin: 10px;
+    }
+
+    #sidebar {
+        display: none;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    #sidebar.open {
+        display: block;
+        position: absolute;
+        z-index: 2;
+    }
+
+    #map {
+        width: 100%;
+        z-index: 1;
+    }
+}
