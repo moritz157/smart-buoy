@@ -128,6 +128,17 @@ define({ "api": [
     "name": "GetStations"
   },
   {
+    "type": "get",
+    "url": "/types",
+    "title": "getTypes",
+    "group": "main",
+    "description": "<p>Get all measurement-types</p>",
+    "version": "0.0.0",
+    "filename": "./app.js",
+    "groupTitle": "main",
+    "name": "GetTypes"
+  },
+  {
     "type": "post",
     "url": "/stationAuthToken",
     "title": "getAuthToken",
