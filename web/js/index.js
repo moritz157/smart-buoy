@@ -66,7 +66,7 @@ function updateSelected(){
     if(selected){
         clearCards(false)
         //document.getElementById("selected").innerHTML = selected.name;
-        $.get("http://localhost:8888/measurements/"+selected.id, function(data, status){
+        $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
             console.log("Data:", data, "Status:", status);
             if(status=="success"){
                 measurements=data;
