@@ -12,7 +12,6 @@ const logger = winston.createLogger({
       new winston.transports.File({ filename: 'logs/combined.log' })
     ]
   });
-  
   //
   // If we're not in production then log to the `console` with the format:
   // `${info.level}: ${info.message} JSON.stringify({ ...rest }) `

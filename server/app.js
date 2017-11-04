@@ -35,7 +35,7 @@ app.get("/", function(req, res){
     logger.log({
         level: 'info',
         message: '"/" Requested. IP: '+ip
-    })
+    });
     res.send("smart-buoy<br>Status: Online");
 });
 
@@ -53,14 +53,14 @@ app.get("/stations", function(req, res){
         logger.log({
             level: 'info',
             message: '"/stations" requested. No errors. IP: '+ip
-        })
+        });
         res.send(result);
     })
     .catch((err) => {
         logger.log({
             level: 'error',
             message: '"/stations" requested. An error occured. IP: '+ip+" Error: "+err
-        })
+        });
         console.log(err);
         res.send(err);
     })
@@ -75,16 +75,29 @@ app.get("/stations", function(req, res){
  * @apiParam {Number} station The station's id
  */
 app.post("/stationAuthToken", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.session_id && req.body.station){
         mysql.getStationAuthToken(req.body.station, req.body.session_id)
         .then((result) => {
+            logger.log({
+                level: 'info',
+                message: '"/stationAuthToken" requested. No errors. IP: '+ip
+            });
             res.send(result);
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/stationAuthToken" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             throw err;
             res.send("Error found:" + err);
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/stations" requested. An error occured. IP: '+ip+" Error: Bad request"
+        });
         res.send("Bad request");
     }
 });
@@ -97,16 +110,29 @@ app.post("/stationAuthToken", function(req, res){
  * @apiParam {Number} station The station's id
  */
 app.get("/measurements/:station", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.params.station){
         console.log("Station:", req.params.station)
         mysql.listMeasurements(req.params.station)
         .then((result) => {
+            logger.log({
+                level: 'info',
+                message: '"/measurements/'+req.params.station+'" requested. No errors. IP: '+ip
+            });
             res.send(result);
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/measurements/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             res.send("Error:", err);
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/measurements/:station" requested. An error occured. IP: '+ip+" Error: Bad request"
+        });
         res.send("Bad request");
     }
 });
@@ -126,12 +152,24 @@ app.post("/login", function(req, res){
     if(req.body.username && req.body.password){
         auth.login(req.body.username, req.body.password, ip)
         .then((result) => {
+            logger.log({
+                level: 'info',
+                message: '"/login" requested. No errors. IP: '+ip
+            });
             res.send({"session_id":result});
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/login" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             res.status(505).send(err)
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/login" requested. An error occured. IP: '+ip+" Error: Bad request"
+        });
         res.status(400).send("Bad request");
     }
 });
@@ -149,12 +187,24 @@ app.post("/register", function(req, res){
     if(req.body.username && req.body.password){
         auth.register(req.body.username, req.body.password)
         .then((result) => {
+            logger.log({
+                level: 'info',
+                message: '"/stations" requested. No errors. IP: '+ip
+            });
             res.send(result);
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/stations" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             res.status(505).send(err)
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/stations" requested. An error occured. IP: '+ip+" Error: Bad request"
+        });
         res.status(400).send("Bad request");
     }
 });
@@ -166,15 +216,28 @@ app.post("/register", function(req, res){
  * @apiParam {String} session_id Your session id
  */
 app.post("/logout", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.session_id){
         auth.logout(req.body.session_id)
         .then(() => {
+            logger.log({
+                level: 'info',
+                message: '"/logout" requested. No errors. IP: '+ip
+            });
             res.send("Deleted");
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/logout" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             res.send(err)
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/logout" requested. An error occured. IP: '+ip+" Error: No session_id"
+        });
         res.send("No session_id")
     }
 });
@@ -189,33 +252,58 @@ app.post("/logout", function(req, res){
  * @apiParam {Object[]} measurements The measurements
  */
 app.post("/submitMeasurement", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.token && req.body.measurements){
         auth.validateAuthToken(req.body.token)
         .then((result) => {
             mysql.insertMeasurements(result.id, req.body.measurements)
             .then(() => {
+                logger.log({
+                    level: 'info',
+                    message: '"/submitMeasurement" requested. No errors. IP: '+ip
+                });
                 res.send("Inserted");
             })
             .catch((err) => {
+                logger.log({
+                    level: 'error',
+                    message: '"/submitMeasurement" requested. An error occured. IP: '+ip+" Error: "+err
+                });
                 console.log(err);
                 res.send("Error:"+err);
             });
         })
         .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/submitMeasurement" requested. An error occured. IP: '+ip+" Error: "+err
+            });
             res.send("Error:"+err);
 
         })
     }else{
+        logger.log({
+            level: 'error',
+            message: '"/submitMeasurement" requested. An error occured. IP: '+ip+" Error: Bad request"
+        });
         res.send("Bad request");
     }
 });
 
 app.listen(8888, function(){
     console.log("Server started on Port: 8888");
+    logger.log({
+        level: 'info',
+        message: 'Server started on Port: 8888'
+    });
 });
 
 var web = express();
 web.use('/',express.static("../web/"));
 web.listen(7777, function(){
+    logger.log({
+        level: 'info',
+        message: 'Webserver started on Port: 7777'
+    });
     console.log("Webserver started on Port: 7777");
 })
