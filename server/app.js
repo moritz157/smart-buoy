@@ -43,8 +43,6 @@ app.get("/", function(req, res){
  * @api {get} /stations getStations
  * @apiGroup main
  * @apiDescription Get all stations
- * 
- * @apiGroup main
  */
 app.get("/stations", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
@@ -60,6 +58,31 @@ app.get("/stations", function(req, res){
         logger.log({
             level: 'error',
             message: '"/stations" requested. An error occured. IP: '+ip+" Error: "+err
+        });
+        console.log(err);
+        res.send(err);
+    })
+});
+
+/**
+ * @api {get} /types getTypes
+ * @apiGroup main
+ * @apiDescription Get all measurement-types
+ */
+app.get("/types", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    mysql.listTypes()
+    .then((result) => {
+        logger.log({
+            level: 'info',
+            message: '"/types" requested. No errors. IP: '+ip
+        });
+        res.send(result);
+    })
+    .catch((err) => {
+        logger.log({
+            level: 'error',
+            message: '"/types" requested. An error occured. IP: '+ip+" Error: "+err
         });
         console.log(err);
         res.send(err);

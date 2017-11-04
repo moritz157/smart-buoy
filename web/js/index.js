@@ -34,32 +34,33 @@ $.get(restEndpoint+"/stations", function(data, status){
             })
         }
     }
-})
+});
 
-function getTypes(measurements){
-    var allTypes = [
-        {type: 0, name: "Temperatur (Luft)"},
-        {type: 1, name: "Temperatur (Wasser)"},
-        {type: 2, name: "Luftfeuchtigkeit"},
-        {type: 3, name: "Windgeschwindigkeit"}
-    ];
-    var types = [];
-    for(var i=0;i<measurements.length;i++){
-        for(var obj in measurements[i]){
-            if((obj != "timestamp") && ($.grep(types, function(e){ return e == obj; }).length == 0)){
-                types.push(obj);
+function getTypes(measurements, callback){
+    $.get(restEndpoint+"/types", function(data, status){
+        if(status=="success"){
+            console.log(status, data)
+            var allTypes = data;
+            var types = [];
+            for(var i=0;i<measurements.length;i++){
+                for(var obj in measurements[i]){
+                    if((obj != "timestamp") && ($.grep(types, function(e){ return e == obj; }).length == 0)){
+                        types.push(obj);
+                    }
+                }
             }
+            console.log(types);
+            var result = [];
+            for(var i=0;i<types.length;i++){
+                var completeType = $.grep(allTypes, function(e){ return e.id == types[i]; })[0];
+                if(completeType){
+                    result.push(completeType);
+                }
+            }
+            console.log("Types:", result);
+            callback(result);
         }
-    }
-    var result = [];
-    for(var i=0;i<types.length;i++){
-        var completeType = $.grep(allTypes, function(e){ return e.type == types[i]; })[0];
-        if(completeType){
-            result.push(completeType);
-        }
-    }
-    console.log("Types:", result);
-    return result;
+    });
 }
 
 function updateSelected(){
@@ -70,10 +71,11 @@ function updateSelected(){
             console.log("Data:", data, "Status:", status);
             if(status=="success"){
                 measurements=data;
-                types = getTypes(data);
-                for(var i=0;i<types.length;i++){
-                    addCard(types[i].name, measurements, types[i].type);
-                }
+                getTypes(data, function(types){
+                    for(var i=0;i<types.length;i++){
+                        addCard(types[i].name, measurements, types[i]);
+                    }
+                });
             }
         });
     }
@@ -108,7 +110,7 @@ function addCard(title, measurements, type){
         <i class="material-icons" onclick="toggleCard(event)">expand_more</i>
     </div>
     <div class="card-content">
-        <canvas id="`+type+`" width="400" height="400"></canvas>
+        <canvas id="`+type.id+`" width="400" height="400"></canvas>
     </div>
     `;
     
@@ -127,13 +129,30 @@ function addCard(title, measurements, type){
     
     for(var i = 0;i < measurements.length;i++){
         data.labels.push("");
-        data.datasets[0].data.push(measurements[i][type]);
+        if(measurements[i].hasOwnProperty(type.id)){
+            data.datasets[0].data.push(measurements[i][type.id]);
+        }
     }
     console.log(data);
     
-    var options = {};
+    var options = {
+        scales: {
+            yAxes: [
+                {
+                    display: true,
+                    labelString: type.name+' in '+type.unit,
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, values) {
+                            return value.toFixed(2)+" "+type.unit;
+                        }
+                    }
+                }
+            ]
+        }
+    };
     
-    var ctx = $("#"+type);
+    var ctx = $("#"+type.id);
     var myLineChart = new Chart(ctx, {
         type: 'line',
         data: data,

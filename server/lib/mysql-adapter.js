@@ -206,5 +206,17 @@ module.exports = {
                 }
             })
         });
+    },
+
+    listTypes: function(){
+        return new Promise(function(resolve, reject){
+            var sql="SELECT * FROM `types`";
+            con.query(sql, function(err, result){
+                if(err) {reject(err)}
+                else{
+                    resolve(result);
+                }
+            })
+        })
     }
 }
