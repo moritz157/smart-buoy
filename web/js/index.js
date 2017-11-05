@@ -3,6 +3,7 @@ var measurements = [{"0":44.082,"timestamp":"2017-10-24T18:11:04.000Z"},{"0":44.
 var mymap = L.map('map').setView([53.574257, 10.002596], 11);
 var selected = undefined;
 var colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#66bb6a", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043"];
+var charts = {};
 
 var restEndpoint = "";
 if(location.origin == "http://localhost:7777"){
@@ -67,7 +68,8 @@ function getTypes(measurements, callback){
 
 function updateSelected(){
     if(selected){
-        clearCards(false)
+        clearCards(false);
+        charts = {};
         //document.getElementById("selected").innerHTML = selected.name;
         $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
             console.log("Data:", data, "Status:", status);
@@ -135,8 +137,8 @@ function addCard(title, measurements, type){
     };
     
     for(var i = 0;i < measurements.length;i++){
-        data.labels.push("");
         if(measurements[i].hasOwnProperty(type.id)){
+            data.labels.push("");
             data.datasets[0].data.push(measurements[i][type.id]);
         }
     }
@@ -165,6 +167,7 @@ function addCard(title, measurements, type){
         data: data,
         options: options
     });
+    charts[type.id]=myLineChart;
 }
 
 function getRandomColor(){
@@ -184,4 +187,15 @@ function hexToRgba(hex, opacity) {
         `+parseInt(result[2], 16)+`,
         `+parseInt(result[3], 16)+`,
         `+opacity+`)` : null;
+}
+
+function addMeasurement(measurement){
+    for(var obj in measurement){
+        console.log(obj);
+        if((obj != "timestamp") && (charts.hasOwnProperty(obj))){
+            charts[obj].data.labels.push("");
+            charts[obj].data.datasets[0].data.push(measurement[obj]);
+            charts[obj].update();
+        }
+    }
 }
