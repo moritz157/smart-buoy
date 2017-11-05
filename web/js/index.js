@@ -100,8 +100,12 @@ function clearCards(showText){
             $("#noSelection").show();
         }, 50);
     }else{
-        $("#sidebar").html("<div id='close-wrapper'><i class='material-icons' onclick='clearCards(true)'>close</i></div>");
+        $("#sidebar").html("<div id='close-wrapper'><i id='realtime' class='material-icons' onclick='toggleRealtime()'>timeline</i> Echtzeitaktualisierungen aktivieren<i id='closeSidebar' class='material-icons' onclick='clearCards(true)'>close</i></div>");
     }
+}
+
+function toggleRealtime(){
+    $("#realtime").toggleClass("active");
 }
 
 function addCard(title, measurements, type){

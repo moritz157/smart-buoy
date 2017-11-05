@@ -88,15 +88,31 @@ i.material-icons {
 }
 
 #close-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin: 10px;
+}
+
+#close-wrapper #closeSidebar {
     display: none;
+}
+
+#close-wrapper #realtime.active {
+    color: rgb(71, 154, 187);
+    border-radius: 13px;
+    padding: 2px;
+    background: rgba(66, 139, 202, 0.3);
 }
 
 /*Responsive*/
 @media only screen and (max-width: 529px) {
     #close-wrapper {
-        display: flex;
-        flex-direction: row-reverse;
-        margin: 10px;
+        justify-content: space-between;
+    }
+
+    #close-wrapper #closeSidebar {
+        display: block;
     }
 
     #sidebar {
