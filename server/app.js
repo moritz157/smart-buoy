@@ -285,6 +285,7 @@ app.post("/submitMeasurement", function(req, res){
                     level: 'info',
                     message: '"/submitMeasurement" requested. No errors. IP: '+ip
                 });
+                socket.submitMeasurement(result.id, req.body.measurements);
                 res.send("Inserted");
             })
             .catch((err) => {
@@ -329,4 +330,7 @@ web.listen(7777, function(){
         message: 'Webserver started on Port: 7777'
     });
     console.log("Webserver started on Port: 7777");
-})
+});
+
+var socket = require("./lib/socket.js");
+socket.start(9999);

@@ -106,6 +106,13 @@ function clearCards(showText){
 
 function toggleRealtime(){
     $("#realtime").toggleClass("active");
+    if($("#realtime").hasClass("active")){
+        console.log("Realtime activated")
+        socket.emit("subscribeToStation", selected.id);
+    }else{
+        socket.emit("unsubscribeFromStation", selected.id);
+        console.log("Realtime deactivated");
+    }
 }
 
 function addCard(title, measurements, type){
