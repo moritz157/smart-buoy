@@ -1,4 +1,4 @@
-var socket = io("http://localhost:9999");
+var socket = io(restEndpoint.substr(0,restEndpoint.length-4)+"9999");
 
 socket.on("newMeasurement", function(station, measurements){
     console.log("newMeasurement", station, measurements);
