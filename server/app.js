@@ -19,6 +19,8 @@ const MeasurementTypes = require("./lib/measurement.types.js");
 
 var logger = require("./lib/log.js").logger;
 
+const config = require("./lib/config.js");
+
 app.use(function(req, res, next){
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
@@ -314,23 +316,21 @@ app.post("/submitMeasurement", function(req, res){
     }
 });
 
-app.listen(8888, function(){
-    console.log("Server started on Port: 8888");
+app.listen(config.restPort, function(){
     logger.log({
         level: 'info',
-        message: 'Server started on Port: 8888'
+        message: 'Server started on Port: '+config.restPort
     });
 });
 
 var web = express();
 web.use('/',express.static("../web/"));
-web.listen(7777, function(){
+web.listen(config.webPort, function(){
     logger.log({
         level: 'info',
-        message: 'Webserver started on Port: 7777'
+        message: 'Webserver started on Port: '+config.webPort
     });
-    console.log("Webserver started on Port: 7777");
 });
 
 var socket = require("./lib/socket.js");
-socket.start(9999);
+socket.start(config.socketPort);
