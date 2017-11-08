@@ -60,8 +60,12 @@ module.exports = {
                 if(err) {reject(err);}
                 else {
                     result = result[0];
-                    var user = new User(result.username, result.password, result.salt, result.permission_level, result.activated, result.id)
-                    resolve(user);
+                    if(result){
+                        var user = new User(result.username, result.password, result.salt, result.permission_level, result.activated, result.id)
+                        resolve(user);
+                    }else{
+                        reject(undefined);
+                    }
                 }
             })
         });

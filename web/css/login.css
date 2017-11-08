@@ -1,0 +1,52 @@
+h1, h3 {
+    font-family: 'Archivo Black';
+    text-align: center;
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-form input, #login-form button {
+    width: 18em;
+    margin: 2px;
+    border-radius: 4px;
+    border: 1px solid gray;
+    padding: 10px;
+    font-size: 1em;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    outline: none;
+}
+
+#login-form button {
+    background-color: #59c75e;
+    border-color: #59c75e;
+    color: white;
+    font-weight: bold;
+    font-family: Helvetica;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#login-form button span {
+    top: 4px;
+    position: relative;
+}
+
+#back-btn {
+    position: absolute;
+    font-family: Arial;
+    top: 7px;
+    display: flex;
+    cursor: pointer;
+}
+
+#back-btn span {
+    top: 4px;
+    position: relative;
+}

@@ -35,6 +35,7 @@ const MeasurementTypes = require("./lib/measurement.types.js");
 
 app.use(function(req, res, next){
     res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type")
     next();
 })
 
@@ -187,6 +188,7 @@ const auth = require("./lib/auth.js");
 app.post("/login", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.username && req.body.password){
+        console.log("Req:",req);
         auth.login(req.body.username, req.body.password, ip)
         .then((result) => {
             logger.log({

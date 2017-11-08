@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>smart buoy - Login</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/login.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Archivo+Black" rel="stylesheet">
+    </head>
+    <body>
+        <div id="back-btn" onclick="window.history.back()"><i class="material-icons">keyboard_arrow_left</i> <span>Zurück</span></div>
+        <h1 style="margin-top: 3em">smart-buoy</h1>
+        <h3>LOGIN</h3>
+        <div id="login-form">
+            <input id="username" type="text" placeholder="Benutzername">
+            <input id="password" type="password" placeholder="Passwort">
+            <button onclick="login()"><span>Login</span> <i class="material-icons">keyboard_arrow_right</i></button>
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="js/md5.js"></script>
+        <script src="js/login.js"></script>
+    </body>
+</html>

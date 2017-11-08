@@ -5,6 +5,7 @@ const crypto = require("crypto");
 module.exports = {
     login: function(user, password, ip){
         return new Promise(function(resolve, reject){
+            const mysql = require("./mysql-adapter.js"); // <-- Weird thing: the outer mysql-constant is not injected here so I have to declare it again inside the promise
             mysql.getUser(user)
             .then((result) => {
                 const hash = crypto.createHash('sha256');               
@@ -26,6 +27,7 @@ module.exports = {
         })
     },
     register: function(user, password){
+        const mysql = require("./mysql-adapter.js"); // <-- Weird thing: the outer mysql-constant is not injected here so I have to declare it again inside the promise
         var salt = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
         const hash = crypto.createHash('sha256');               
         hash.update(password+salt); 
