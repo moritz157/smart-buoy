@@ -8,18 +8,30 @@ const bodyParser = require('body-parser');
 // parse application/json
 app.use(bodyParser.json())
 
+var logger = require("./lib/log.js").logger;
+
+const config = require("./lib/config.js");
+
 var mysql = require("./lib/mysql-adapter.js");
-mysql.connect();
+mysql.connect()
+.then(() => {
+    logger.log({
+        level: 'info',
+        message: 'Connected to mysql-database'
+    });
+})
+.catch((err) => {
+    logger.log({
+        level: 'error',
+        message: 'An error occured while connecting to mysql-database. Error: '+err
+    });
+});
 
 var Session = require("./lib/session.class.js");
 var User = require("./lib/user.class.js");
 var Measurement = require("./lib/measurement.class.js");
 var Station = require("./lib/station.class.js");
 const MeasurementTypes = require("./lib/measurement.types.js");
-
-var logger = require("./lib/log.js").logger;
-
-const config = require("./lib/config.js");
 
 app.use(function(req, res, next){
     res.setHeader("Access-Control-Allow-Origin", "*");

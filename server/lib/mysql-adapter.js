@@ -15,10 +15,15 @@ const auth = require("./auth.js");
 
 module.exports = {
     connect: function(){
-        con.connect(function(err){
-            if(err) throw err;
-            console.log("Connected to database");
-            connected=true;
+        return new Promise(function(resolve, reject){
+            con.connect(function(err){
+                if(err) {
+                    reject(err);
+                }else{
+                    resolve();
+                    connected=true;
+                }
+            });
         });
     },
 
