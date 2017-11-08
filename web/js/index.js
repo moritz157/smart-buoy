@@ -85,6 +85,26 @@ function updateSelected(){
     }
 }
 
+function updateData(){
+    if(selected){
+        $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
+            console.log("Data:", data, "Status:", status);
+            if(status=="success"){
+                console.log("New Measurements:", data.length-measurements.length, data.slice(measurements.length));
+                var toInsert = data.slice(measurements.length)
+                for(var i=0;i<toInsert.length;i++){
+                    addMeasurement(toInsert[i]);
+                }
+                /*measurements=data;
+                getTypes(data, function(types){
+                    for(var i=0;i<types.length;i++){
+                        addCard(types[i].name, measurements, types[i]);
+                    }
+                });*/
+            }
+        });
+    }
+}
 
 function toggleCard(event){
     console.log($(event.target).parent().parent());
@@ -107,6 +127,7 @@ function clearCards(showText){
 function toggleRealtime(){
     $("#realtime").toggleClass("active");
     if($("#realtime").hasClass("active")){
+        updateData();
         console.log("Realtime activated")
         socket.emit("subscribeToStation", selected.id);
     }else{
