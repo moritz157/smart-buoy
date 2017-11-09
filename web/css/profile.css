@@ -39,7 +39,7 @@ a {
 #main #nav {
     display: flex;
     flex-direction: column;
-    max-width: 10em;
+    max-width: 11em;
     border: 1px solid #dedede;
     border-radius: 3px;
 }
@@ -47,12 +47,31 @@ a {
 #main #nav a {
     padding: 5px;
     color: #0366d6;
+    padding-right: 20px;
 }
 
 #main #nav a:not(:last-child) {
     border-bottom: 1px solid #adadad;
 }
 
-#main #content {
+#main #content-wrapper {
     margin-left: 20px;
+}
+
+#main #content-wrapper div {
+    position: absolute;
+    z-index: 1;
+    background-color: white;
+}
+
+#main #content-wrapper #account {
+    z-index: 2;
+}
+
+#main #content-wrapper div:target {
+    z-index: 3;
+}
+
+#main #content-wrapper div p {
+    margin: 0px;
 }

@@ -7,6 +7,7 @@ var apiRoutes = express.Router();
 module.exports = {
     init: function(){
         apiRoutes.use(function(req, res, next){
+            console.log(req);
             if(req.body.session_id){
                 auth.validateSessionId(req.body.session_id)
                 .then((result) => {
@@ -24,7 +25,7 @@ module.exports = {
                     res.send(err);
                 })
             }else{
-                res.status(400).send({"error":"No session_id"});
+                res.send({"error":"No session_id"});
             }
         });
 
