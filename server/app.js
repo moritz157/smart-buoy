@@ -37,7 +37,11 @@ app.use(function(req, res, next){
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type")
     next();
-})
+});
+
+var userRouteProvider = require("./lib/user-routes.js");
+var userRoutes = userRouteProvider.init();
+app.use("/user", userRoutes);
 
 /**
  * @api {get} / root

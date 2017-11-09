@@ -72,13 +72,14 @@ module.exports = {
     },
     getSession: function(id){
         return new Promise(function(resolve, reject){
-            var sql = "SELECT * FROM sessions WHERE session_id = "+con.escape(id)+"";
+            var sql = "SELECT * FROM sessions, users WHERE session_id = "+con.escape(id)+"  AND sessions.user_id = users.id";
             con.query(sql, function(err, result){
                 if(err) {console.log("Err:",err);reject(err);}
                 else {
                     result = result[0];
                     var session = new Session(result.user_id, result.ip, result.session_id, result.created);
-                    resolve(session);
+                    var user = new User(result.username, result.passord, result.salt, result.permission_level, result.activated, result.id);
+                    resolve({session: session, user: user});
                 }
             })
         });
@@ -112,6 +113,14 @@ module.exports = {
     getAllStations: function(){
         return new Promise(function(resolve, reject){
             con.query("SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen", function(err, result){
+                if(err){reject(err)}
+                else{resolve(result)}
+            })
+        });
+    },
+    getUsersStations: function(user){
+        return new Promise(function(resolve, reject){
+            con.query("SELECT id, name, creator_id, created, last_update, enabled, longitude, latitude FROM stationen WHERE creator_id = "+con.escape(user), function(err, result){
                 if(err){reject(err)}
                 else{resolve(result)}
             })

@@ -198,5 +198,53 @@
     "filename": "./app.js",
     "groupTitle": "stations",
     "name": "PostSubmitmeasurement"
+  },
+  {
+    "type": "post",
+    "url": "/user/info",
+    "title": "info",
+    "group": "user",
+    "description": "<p>Returns the user object</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "session_id",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./lib/user-routes.js",
+    "groupTitle": "user",
+    "name": "PostUserInfo"
+  },
+  {
+    "type": "post",
+    "url": "/user/stations",
+    "title": "userStations",
+    "group": "user",
+    "description": "<p>Returns the user's stations</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "session_id",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./lib/user-routes.js",
+    "groupTitle": "user",
+    "name": "PostUserStations"
   }
 ]

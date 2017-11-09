@@ -1,0 +1,58 @@
+body {
+    margin: 0px;
+    overflow: hidden;
+    font-family: Arial;
+}
+
+header {
+    height: 2.6em;
+}
+
+header nav {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    box-shadow: #afafaf 0px -3px 12px 0px;
+}
+
+header nav .left, header nav .right {
+    display: flex;
+    position: relative;
+    padding: 12px;
+}
+
+a {
+    text-decoration: none !important;
+    color: black;
+}
+
+#heading {
+    margin-left: 10px;
+}
+
+#main {
+    padding-left: 12px;
+    display: flex;
+
+}
+
+#main #nav {
+    display: flex;
+    flex-direction: column;
+    max-width: 10em;
+    border: 1px solid #dedede;
+    border-radius: 3px;
+}
+
+#main #nav a {
+    padding: 5px;
+    color: #0366d6;
+}
+
+#main #nav a:not(:last-child) {
+    border-bottom: 1px solid #adadad;
+}
+
+#main #content {
+    margin-left: 20px;
+}

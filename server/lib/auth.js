@@ -44,6 +44,7 @@ module.exports = {
             if(session_id){
                 //console.log(mysql.getAllStations);
                 mysql.getSession(session_id).then((result) => {
+                    console.log(result.user);
                     resolve(result);
                 })
                 .catch((err) => {
