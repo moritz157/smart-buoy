@@ -10,6 +10,18 @@ module.exports = class {
         this.registered = registered || 0;
     }
 
+    hasPermission(permission){
+        return (this.permission_level & (1 << permission))>0;
+    }
+
+    addPermission(permission){
+        this.permission_level = this.permission_level | (1 << permission);
+    }
+
+    removePermission(permission){
+        this.permission_level = this.permission_level ^ (1 << permission);
+    }
+
     /*load(id) {
         console.log(this.constructor);
         var self = new this.constructor(id);
