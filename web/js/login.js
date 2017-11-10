@@ -33,3 +33,4 @@ function loginResponseHandler(data, status){
         window.location = "index.html";
     }
 }
+

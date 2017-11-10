@@ -21,6 +21,13 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoibW9yaXR6MTU3IiwiYSI6ImNqOTY3dG9kMjAxZzUzMnBrejQzMTRyMXQifQ.2zgL0rmTRGTNWn7cXUEDVQ'
 }).addTo(mymap);
 
+var url = new URL(location.href);
+var preSelectedStation;
+if(url.searchParams.has("station")){
+    console.log("Selected station: "+url.searchParams.get("station"));
+    preSelectedStation=url.searchParams.get("station");
+}
+
 $.get(restEndpoint+"/stations", function(data, status){
     if(status=="success"){
         console.log("Got stations:", data);
@@ -34,7 +41,16 @@ $.get(restEndpoint+"/stations", function(data, status){
                 selected=stations[parseInt(event.target._popup._content.split(" | ")[0])];
                 $("#sidebar").addClass("open");
                 updateSelected();
-            })
+            });
+            console.log(marker);
+            if(preSelectedStation==stations[i].id){
+                marker.openPopup();
+                console.log("Clicked:", stations[i]);
+                selected=stations[i];
+                $("#sidebar").addClass("open");
+                updateSelected();
+                mymap.setView([stations[i].latitude, stations[i].longitude], 11)
+            }
         }
     }
 });

@@ -78,7 +78,7 @@ module.exports = {
                 else {
                     result = result[0];
                     var session = new Session(result.user_id, result.ip, result.session_id, result.created);
-                    var user = new User(result.username, result.passord, result.salt, result.permission_level, result.activated, result.id);
+                    var user = new User(result.username, result.passord, result.salt, result.permission_level, result.activated, result.registered, result.id);
                     resolve({session: session, user: user});
                 }
             })

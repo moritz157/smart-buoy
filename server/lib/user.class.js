@@ -1,12 +1,13 @@
 var mysql = require("./mysql-adapter.js");
 module.exports = class {
-    constructor(username, password, salt, permission_level, activated, id) {
+    constructor(username, password, salt, permission_level, activated, registered, id) {
         this.id = id;
         this.username = username || "";
         this.password = password || "";
         this.salt = salt || "";
         this.permission_level = permission_level || 0;
         this.activated = activated || true;
+        this.registered = registered || 0;
     }
 
     /*load(id) {
