@@ -1,0 +1,48 @@
+﻿	<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+		<PropertyGroup>
+			<ProjectGuid>{1255DF86-EC72-4D2D-8CE1-6965276AFEF2}</ProjectGuid>
+		</PropertyGroup>
+		<ItemGroup>
+			<Projects Include="SmartBuoy.dproj">
+				<Dependencies/>
+			</Projects>
+			<Projects Include="..\..\..\Documents\RAD Studio\ComPort\Examples\delphi\ComExample.dproj">
+				<Dependencies/>
+			</Projects>
+		</ItemGroup>
+		<ProjectExtensions>
+			<Borland.Personality>Default.Personality.12</Borland.Personality>
+			<Borland.ProjectType/>
+			<BorlandProject>
+				<Default.Personality/>
+			</BorlandProject>
+		</ProjectExtensions>
+		<Target Name="SmartBuoy">
+			<MSBuild Projects="SmartBuoy.dproj"/>
+		</Target>
+		<Target Name="SmartBuoy:Clean">
+			<MSBuild Projects="SmartBuoy.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="SmartBuoy:Make">
+			<MSBuild Projects="SmartBuoy.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="ComExample">
+			<MSBuild Projects="..\..\..\Documents\RAD Studio\ComPort\Examples\delphi\ComExample.dproj"/>
+		</Target>
+		<Target Name="ComExample:Clean">
+			<MSBuild Projects="..\..\..\Documents\RAD Studio\ComPort\Examples\delphi\ComExample.dproj" Targets="Clean"/>
+		</Target>
+		<Target Name="ComExample:Make">
+			<MSBuild Projects="..\..\..\Documents\RAD Studio\ComPort\Examples\delphi\ComExample.dproj" Targets="Make"/>
+		</Target>
+		<Target Name="Build">
+			<CallTarget Targets="SmartBuoy;ComExample"/>
+		</Target>
+		<Target Name="Clean">
+			<CallTarget Targets="SmartBuoy:Clean;ComExample:Clean"/>
+		</Target>
+		<Target Name="Make">
+			<CallTarget Targets="SmartBuoy:Make;ComExample:Make"/>
+		</Target>
+		<Import Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')" Project="$(BDS)\Bin\CodeGear.Group.Targets"/>
+	</Project>
