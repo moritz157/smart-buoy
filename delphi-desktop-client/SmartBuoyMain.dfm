@@ -2,8 +2,8 @@ object Form6: TForm6
   Left = 0
   Top = 0
   Caption = 'Smart Buoy'
-  ClientHeight = 415
-  ClientWidth = 703
+  ClientHeight = 522
+  ClientWidth = 783
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,15 +11,20 @@ object Form6: TForm6
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    783
+    522)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
-    Left = 247
-    Top = 8
-    Width = 434
-    Height = 399
+    Left = 281
+    Top = 264
+    Width = 489
+    Height = 250
+    Anchors = [akTop, akRight, akBottom]
     Caption = 'Werte'
     TabOrder = 0
+    ExplicitLeft = 287
     object Label2: TLabel
       Left = 22
       Top = 72
@@ -64,10 +69,15 @@ object Form6: TForm6
   object GroupBox2: TGroupBox
     Left = 8
     Top = 8
-    Width = 233
-    Height = 399
+    Width = 267
+    Height = 506
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Verbindung'
     TabOrder = 1
+    ExplicitWidth = 273
+    DesignSize = (
+      267
+      506)
     object Label1: TLabel
       Left = 13
       Top = 56
@@ -102,9 +112,108 @@ object Form6: TForm6
     object Memo1: TMemo
       Left = 8
       Top = 80
-      Width = 209
-      Height = 308
+      Width = 243
+      Height = 415
+      Anchors = [akLeft, akTop, akRight, akBottom]
+      ScrollBars = ssVertical
       TabOrder = 2
+      ExplicitWidth = 209
+      ExplicitHeight = 308
+    end
+  end
+  object GroupBox3: TGroupBox
+    Left = 281
+    Top = 112
+    Width = 489
+    Height = 146
+    Anchors = [akTop, akRight]
+    Caption = 'Arduino Konfiguration'
+    TabOrder = 2
+    ExplicitLeft = 287
+    object CheckBox2: TCheckBox
+      Left = 16
+      Top = 26
+      Width = 209
+      Height = 17
+      Caption = 'Werte auf Micro-SD Karte speichern'
+      TabOrder = 0
+    end
+    object RadioGroup1: TRadioGroup
+      Left = 256
+      Top = 26
+      Width = 217
+      Height = 87
+      Caption = 'Lampe'
+      Items.Strings = (
+        'Lampe aus'
+        'Lampe bei Dunkelheit an'
+        'Lampe dauerhauft an')
+      TabOrder = 1
+    end
+  end
+  object GroupBox4: TGroupBox
+    Left = 281
+    Top = 8
+    Width = 489
+    Height = 98
+    Anchors = [akTop, akRight]
+    Caption = 'Lokale Konfiguration'
+    TabOrder = 3
+    ExplicitLeft = 287
+    object Label3: TLabel
+      Left = 176
+      Top = 25
+      Width = 26
+      Height = 13
+      Caption = 'Pfad:'
+    end
+    object Label4: TLabel
+      Left = 188
+      Top = 48
+      Width = 14
+      Height = 13
+      Caption = 'IP:'
+    end
+    object CBSaveData: TCheckBox
+      Left = 16
+      Top = 24
+      Width = 137
+      Height = 17
+      Caption = 'Werte lokal speichern'
+      TabOrder = 0
+    end
+    object EdtCsvPath: TEdit
+      Left = 208
+      Top = 22
+      Width = 130
+      Height = 21
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object BtnBrowseSaveData: TButton
+      Left = 344
+      Top = 20
+      Width = 75
+      Height = 25
+      Caption = 'Durchsuchen'
+      TabOrder = 2
+      OnClick = BtnBrowseSaveDataClick
+    end
+    object CBUploadToServer: TCheckBox
+      Left = 16
+      Top = 47
+      Width = 169
+      Height = 17
+      Caption = 'Werte zum Server hochladen'
+      TabOrder = 3
+    end
+    object EdtServerIP: TEdit
+      Left = 208
+      Top = 45
+      Width = 130
+      Height = 21
+      TabOrder = 4
+      Text = '127.0.0.1'
     end
   end
   object ComPort1: TComPort
@@ -128,19 +237,19 @@ object Form6: TForm6
     OnBeforeClose = ComPort1BeforeClose
     OnRxChar = ComPort1RxChar
     OnRxBuf = ComPort1RxBuf
-    Left = 240
-    Top = 128
+    Left = 168
+    Top = 240
   end
   object ComDataPacket1: TComDataPacket
     ComPort = ComPort1
     OnPacket = ComDataPacket1Packet
-    Left = 240
-    Top = 184
+    Left = 176
+    Top = 288
   end
   object TmrInterval: TTimer
     Enabled = False
     OnTimer = TmrIntervalTimer
-    Left = 264
-    Top = 240
+    Left = 136
+    Top = 328
   end
 end

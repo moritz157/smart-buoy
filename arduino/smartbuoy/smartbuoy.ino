@@ -11,18 +11,72 @@ OneWire oneWire(ONE_WIRE_BUS);
 // Pass our oneWire reference to Dallas Temperature. 
 DallasTemperature sensors(&oneWire);
 /********************************************************************/ 
+
+//SD Card
+#include <SPI.h>
+#include <SD.h>
+
+File csvFile;
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(13, OUTPUT);
+  Serial.print("Initializing SD card...");
+
+  if (!SD.begin(4)) {
+    Serial.println("initialization failed!");
+    while (1);
+  }
+  Serial.println("initialization done.");
+
   sensors.begin();
 }
+bool saveDataToSD = true;
+bool doInterval = false;
 
+String bufferString = "";
+long lastTime = 0;
 void loop() {
   // put your main code here, to run repeatedly:
   if(Serial.available() > 0){
-    sensors.requestTemperatures();
-    Serial.println(sensors.getTempCByIndex(0));
-    Serial.read();
+    char input = Serial.read();
+    bufferString+=input;
+    if(input=='\r'){
+      evaluateCommand(bufferString);
+      bufferString="";
+    }
+  }
+  if(doInterval && millis() - 20000 > lastTime){
+    lastTime = millis();
+    doMeasurements();
   }
 }
+
+void evaluateCommand(String bufferString){
+  if(bufferString=="a\r"){
+     doMeasurements();
+  }else if(bufferString=="i\r"){
+    doInterval = !doInterval;
+    Serial.println(doInterval);
+  }
+}
+
+void doMeasurements(){
+  sensors.requestTemperatures();
+  float temp = sensors.getTempCByIndex(0);
+  if(saveDataToSD){
+    saveLineToSD(String(temp) + ";");
+  }
+  Serial.println(temp);
+}
+
+void saveLineToSD(String line){
+  csvFile = SD.open("SMART-~1.csv", FILE_WRITE);
+  if(csvFile){
+    csvFile.println(line);
+    csvFile.close();
+  }else{
+    Serial.println("Error opening smart-buoy.csv");
+  }
+}
+

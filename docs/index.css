@@ -1,0 +1,40 @@
+body {
+    background: linear-gradient(to top right, #0059ff, #24e891);
+    font-family: Poppins;
+    color: white;
+}
+
+#header {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+#header h1 {
+    font-size: 4.7em;
+    margin-top: 2em;
+    margin-bottom: 0px;
+}
+
+#header p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+#header #more {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: calc(100% - 8em);
+    width: 97%;
+    flex-direction: column;
+    text-align: center;
+}
+
+#header #more p {
+    cursor: pointer;
+}
+
+#header #more img {
+    height: 6em;
+    cursor: pointer;
+}
