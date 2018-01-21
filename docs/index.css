@@ -2,16 +2,18 @@ body {
     background: linear-gradient(to top right, #0059ff, #24e891);
     font-family: Poppins;
     color: white;
+    margin: 0px;
 }
 
 #header {
     padding-left: 1em;
     padding-right: 1em;
+    height: 100%;
+    padding-top: 8em;
 }
 
 #header h1 {
     font-size: 4.7em;
-    margin-top: 2em;
     margin-bottom: 0px;
 }
 
@@ -37,4 +39,37 @@ body {
 #header #more img {
     height: 6em;
     cursor: pointer;
+}
+
+#content {
+    background-color: white;
+    box-shadow: 0px -5px 7px 0px #8282821f;
+    color: black;
+    padding: 15px;
+}
+
+#top-bar {
+    position: absolute;
+    display: flex;
+    justify-content: flex-end;
+    top: 10px;
+    width: 98%;
+}
+
+#top-bar #github {
+    display: flex;
+    padding-right: 10px;
+}
+
+#top-bar #github svg {
+    width: 29px;
+    height: 29px;
+    fill: white;
+}
+
+#top-bar #github p {
+    top: 3px;
+    left: 7px;
+    position: relative;
+    margin: 0px;
 }

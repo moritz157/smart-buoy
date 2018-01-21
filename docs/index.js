@@ -9,3 +9,10 @@ function startWelcomeAnimation(){
 }
 
 startWelcomeAnimation();
+
+function more(){
+    var content = $("#content");
+    $('html, body').animate({
+        scrollTop: content.offset().top
+    }, 1000);
+}
