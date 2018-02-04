@@ -1,0 +1,45 @@
+object FSDFileTransfer: TFSDFileTransfer
+  Left = 0
+  Top = 0
+  Caption = 'FSDFileTransfer'
+  ClientHeight = 280
+  ClientWidth = 403
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  DesignSize = (
+    403
+    280)
+  PixelsPerInch = 96
+  TextHeight = 13
+  object Button1: TButton
+    Left = 8
+    Top = 8
+    Width = 129
+    Height = 33
+    Caption = #220'bertragung starten'
+    TabOrder = 0
+  end
+  object ProgressBar1: TProgressBar
+    Left = 142
+    Top = 8
+    Width = 253
+    Height = 33
+    Anchors = [akLeft, akTop, akRight]
+    TabOrder = 1
+    ExplicitWidth = 323
+  end
+  object Memo1: TMemo
+    Left = 8
+    Top = 47
+    Width = 387
+    Height = 218
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    ScrollBars = ssVertical
+    TabOrder = 2
+  end
+end

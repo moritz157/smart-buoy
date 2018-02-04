@@ -5,18 +5,18 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, CPortCtl, Vcl.StdCtrls, CPort, StrUtils,
-  Vcl.ExtCtrls;
+  Vcl.ExtCtrls, Vcl.Menus, LiveView, SDFileTransfer;
 
 type
   TForm6 = class(TForm)
     ComPort1: TComPort;
     BtnConnect: TButton;
-    Button2: TButton;
+    BtnGetData: TButton;
     Memo1: TMemo;
     ComDataPacket1: TComDataPacket;
     EdtPort: TEdit;
-    GroupBox1: TGroupBox;
-    GroupBox2: TGroupBox;
+    GBData: TGroupBox;
+    GBConnection: TGroupBox;
     Label1: TLabel;
     Lbl_Status: TLabel;
     Label2: TLabel;
@@ -24,19 +24,32 @@ type
     BtnInterval: TButton;
     TmrInterval: TTimer;
     LblTemp: TLabel;
-    GroupBox3: TGroupBox;
-    CheckBox2: TCheckBox;
-    GroupBox4: TGroupBox;
+    GBConfig: TGroupBox;
+    CBSaveOnSD: TCheckBox;
+    GBLocalConfig: TGroupBox;
     CBSaveData: TCheckBox;
-    Label3: TLabel;
+    LblPath: TLabel;
     EdtCsvPath: TEdit;
     BtnBrowseSaveData: TButton;
     CBUploadToServer: TCheckBox;
     EdtServerIP: TEdit;
-    Label4: TLabel;
-    RadioGroup1: TRadioGroup;
+    LblServerIP: TLabel;
+    RGLight: TRadioGroup;
+    BtnReadSD: TButton;
+    MainMenu1: TMainMenu;
+    Datei1: TMenuItem;
+    Daten1: TMenuItem;
+    ber1: TMenuItem;
+    ber2: TMenuItem;
+    Verbindungtrennen1: TMenuItem;
+    Einstellungen1: TMenuItem;
+    N1: TMenuItem;
+    Arduinokonfigurieren1: TMenuItem;
+    LiveView1: TMenuItem;
+    Verlauf1: TMenuItem;
+    SDKarteauslesen1: TMenuItem;
     procedure BtnConnectClick(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
+    procedure BtnGetDataClick(Sender: TObject);
     procedure ComPort1RxChar(Sender: TObject; Count: Integer);
     procedure ComPort1RxBuf(Sender: TObject; const Buffer; Count: Integer);
     procedure ComDataPacket1Packet(Sender: TObject; const Str: string);
@@ -48,6 +61,8 @@ type
     procedure TmrIntervalTimer(Sender: TObject);
     procedure BtnBrowseSaveDataClick(Sender: TObject);
     procedure SetConfigurationEnabled(status: Boolean);
+    procedure LiveView1Click(Sender: TObject);
+    procedure SDKarteauslesen1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -123,7 +138,7 @@ if saveDialog.Execute then
 saveDialog.Free;
 end;
 
-procedure TForm6.Button2Click(Sender: TObject);
+procedure TForm6.BtnGetDataClick(Sender: TObject);
 begin
 if(ComPort1.Connected=true) then
 begin
@@ -142,6 +157,13 @@ if (CBSaveData.Checked=true) AND (EdtCsvPath.Text<>'') then addLineToFile(EdtCsv
 end else lastPacket:=false;
 LblTemp.Caption:=LblTemp.Caption+Str;
 Memo1.Text:=Memo1.Text + Str;
+FSDFileTransfer.onPacket(Str);
+end;
+
+procedure TForm6.SDKarteauslesen1Click(Sender: TObject);
+begin
+FSDFileTransfer.Show;
+FSDFileTransfer.ComPort:=ComPort1;
 end;
 
 procedure TForm6.SetConfigurationEnabled(status: Boolean);
@@ -160,7 +182,7 @@ Lbl_Status.Caption:='Getrennt';
 BtnConnect.Enabled:=true;
 BtnConnect.Caption:='Verbinden';
 EdtPort.Enabled:=true;
-
+LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 SetConfigurationEnabled(true);
 end;
 
@@ -169,7 +191,7 @@ begin
 Lbl_Status.Caption:='Verbunden';
 BtnConnect.Enabled:=true;
 BtnConnect.Caption:='Trennen';
-
+LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 SetConfigurationEnabled(false);
 end;
 
@@ -177,6 +199,7 @@ procedure TForm6.ComPort1BeforeClose(Sender: TObject);
 begin
 Lbl_Status.Caption:='Trennen';
 BtnConnect.Enabled:=false;
+LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 end;
 
 procedure TForm6.ComPort1BeforeOpen(Sender: TObject);
@@ -184,6 +207,7 @@ begin
 Lbl_Status.Caption:='Verbinden...';
 BtnConnect.Enabled:=false;
 EdtPort.Enabled:=false;
+LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 end;
 
 procedure TForm6.ComPort1RxBuf(Sender: TObject; const Buffer; Count: Integer);
@@ -201,6 +225,11 @@ s: String;
 begin
 ComPort1.ReadStr(s, Count);
 ShowMessage(s);
+end;
+
+procedure TForm6.LiveView1Click(Sender: TObject);
+begin
+LiveViewForm.Show;
 end;
 
 procedure TForm6.TmrIntervalTimer(Sender: TObject);

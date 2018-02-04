@@ -10,13 +10,14 @@ object Form6: TForm6
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   DesignSize = (
     783
     522)
   PixelsPerInch = 96
   TextHeight = 13
-  object GroupBox1: TGroupBox
+  object GBData: TGroupBox
     Left = 281
     Top = 264
     Width = 489
@@ -24,10 +25,9 @@ object Form6: TForm6
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Werte'
     TabOrder = 0
-    ExplicitLeft = 287
     object Label2: TLabel
       Left = 22
-      Top = 72
+      Top = 91
       Width = 60
       Height = 13
       Caption = 'Temperatur:'
@@ -38,17 +38,17 @@ object Form6: TForm6
       Width = 3
       Height = 13
     end
-    object Button2: TButton
+    object BtnGetData: TButton
       Left = 22
       Top = 27
       Width = 91
       Height = 25
       Caption = 'Daten abfragen'
       TabOrder = 0
-      OnClick = Button2Click
+      OnClick = BtnGetDataClick
     end
     object EdtInterval: TEdit
-      Left = 209
+      Left = 265
       Top = 29
       Width = 113
       Height = 21
@@ -57,7 +57,7 @@ object Form6: TForm6
       TextHint = 'Interval (Sekunden)'
     end
     object BtnInterval: TButton
-      Left = 328
+      Left = 384
       Top = 27
       Width = 91
       Height = 25
@@ -65,8 +65,16 @@ object Form6: TForm6
       TabOrder = 2
       OnClick = BtnIntervalClick
     end
+    object BtnReadSD: TButton
+      Left = 119
+      Top = 27
+      Width = 106
+      Height = 25
+      Caption = 'SD-Karte auslesen'
+      TabOrder = 3
+    end
   end
-  object GroupBox2: TGroupBox
+  object GBConnection: TGroupBox
     Left = 8
     Top = 8
     Width = 267
@@ -74,7 +82,6 @@ object Form6: TForm6
     Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Verbindung'
     TabOrder = 1
-    ExplicitWidth = 273
     DesignSize = (
       267
       506)
@@ -117,11 +124,9 @@ object Form6: TForm6
       Anchors = [akLeft, akTop, akRight, akBottom]
       ScrollBars = ssVertical
       TabOrder = 2
-      ExplicitWidth = 209
-      ExplicitHeight = 308
     end
   end
-  object GroupBox3: TGroupBox
+  object GBConfig: TGroupBox
     Left = 281
     Top = 112
     Width = 489
@@ -129,8 +134,7 @@ object Form6: TForm6
     Anchors = [akTop, akRight]
     Caption = 'Arduino Konfiguration'
     TabOrder = 2
-    ExplicitLeft = 287
-    object CheckBox2: TCheckBox
+    object CBSaveOnSD: TCheckBox
       Left = 16
       Top = 26
       Width = 209
@@ -138,7 +142,7 @@ object Form6: TForm6
       Caption = 'Werte auf Micro-SD Karte speichern'
       TabOrder = 0
     end
-    object RadioGroup1: TRadioGroup
+    object RGLight: TRadioGroup
       Left = 256
       Top = 26
       Width = 217
@@ -147,11 +151,11 @@ object Form6: TForm6
       Items.Strings = (
         'Lampe aus'
         'Lampe bei Dunkelheit an'
-        'Lampe dauerhauft an')
+        'Lampe dauerhaft an')
       TabOrder = 1
     end
   end
-  object GroupBox4: TGroupBox
+  object GBLocalConfig: TGroupBox
     Left = 281
     Top = 8
     Width = 489
@@ -159,15 +163,14 @@ object Form6: TForm6
     Anchors = [akTop, akRight]
     Caption = 'Lokale Konfiguration'
     TabOrder = 3
-    ExplicitLeft = 287
-    object Label3: TLabel
+    object LblPath: TLabel
       Left = 176
       Top = 25
       Width = 26
       Height = 13
       Caption = 'Pfad:'
     end
-    object Label4: TLabel
+    object LblServerIP: TLabel
       Left = 188
       Top = 48
       Width = 14
@@ -251,5 +254,45 @@ object Form6: TForm6
     OnTimer = TmrIntervalTimer
     Left = 136
     Top = 328
+  end
+  object MainMenu1: TMainMenu
+    Left = 272
+    Top = 200
+    object Datei1: TMenuItem
+      Caption = 'Verbindung'
+      object Verbindungtrennen1: TMenuItem
+        Caption = 'Verbindung trennen'
+        Enabled = False
+      end
+      object Arduinokonfigurieren1: TMenuItem
+        Caption = 'Konfiguration'
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Einstellungen1: TMenuItem
+        Caption = 'Einstellungen'
+      end
+    end
+    object Daten1: TMenuItem
+      Caption = 'Daten'
+      object LiveView1: TMenuItem
+        Caption = 'Live-View'
+        OnClick = LiveView1Click
+      end
+      object SDKarteauslesen1: TMenuItem
+        Caption = 'SD-Karte auslesen'
+        OnClick = SDKarteauslesen1Click
+      end
+      object Verlauf1: TMenuItem
+        Caption = 'Verlauf'
+      end
+    end
+    object ber1: TMenuItem
+      Caption = 'Hilfe'
+      object ber2: TMenuItem
+        Caption = 'Smart buoy Desktop v. 1.0'
+      end
+    end
   end
 end
