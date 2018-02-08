@@ -8,7 +8,7 @@ uses
   Vcl.ExtCtrls, Vcl.Menus, LiveView, SDFileTransfer;
 
 type
-  TForm6 = class(TForm)
+  TFSmartBuoyMain = class(TForm)
     ComPort1: TComPort;
     BtnConnect: TButton;
     BtnGetData: TButton;
@@ -63,6 +63,7 @@ type
     procedure SetConfigurationEnabled(status: Boolean);
     procedure LiveView1Click(Sender: TObject);
     procedure SDKarteauslesen1Click(Sender: TObject);
+    procedure ber2Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -70,7 +71,7 @@ type
   end;
 
 var
-  Form6: TForm6;
+  FSmartBuoyMain: TFSmartBuoyMain;
   lastPacket: Boolean;
 
 implementation
@@ -90,7 +91,7 @@ begin
   end;
 end;
 
-procedure TForm6.BtnConnectClick(Sender: TObject);
+procedure TFSmartBuoyMain.BtnConnectClick(Sender: TObject);
 begin
 if(ComPort1.Connected) then
 begin
@@ -103,7 +104,7 @@ begin
 end;
 end;
 
-procedure TForm6.BtnIntervalClick(Sender: TObject);
+procedure TFSmartBuoyMain.BtnIntervalClick(Sender: TObject);
 begin
 if TmrInterval.Enabled=true then
 begin
@@ -120,7 +121,12 @@ begin
 end;
 end;
 
-procedure TForm6.BtnBrowseSaveDataClick(Sender: TObject);
+procedure TFSmartBuoyMain.ber2Click(Sender: TObject);
+begin
+ShowMessage('Smart Buoy Desktop Version: 1.0' + #$D#$A + 'Lizenziert unter der Apache License 2.0' + #$D#$A + 'Copyright ' + char(169) + ' 2018 Moritz Ahrens' + #$D#$A + 'https://moritz157.github.io/smart-buoy');
+end;
+
+procedure TFSmartBuoyMain.BtnBrowseSaveDataClick(Sender: TObject);
 var
   saveDialog: TSaveDialog;
 begin
@@ -138,7 +144,7 @@ if saveDialog.Execute then
 saveDialog.Free;
 end;
 
-procedure TForm6.BtnGetDataClick(Sender: TObject);
+procedure TFSmartBuoyMain.BtnGetDataClick(Sender: TObject);
 begin
 if(ComPort1.Connected=true) then
 begin
@@ -147,7 +153,7 @@ begin
 end;
 end;
 
-procedure TForm6.ComDataPacket1Packet(Sender: TObject; const Str: string);
+procedure TFSmartBuoyMain.ComDataPacket1Packet(Sender: TObject; const Str: string);
 begin
 if(lastPacket) then LblTemp.Caption:='';
 if(ContainsText(LblTemp.Caption+Str, #$D#$A) = true) then
@@ -160,13 +166,13 @@ Memo1.Text:=Memo1.Text + Str;
 FSDFileTransfer.onPacket(Str);
 end;
 
-procedure TForm6.SDKarteauslesen1Click(Sender: TObject);
+procedure TFSmartBuoyMain.SDKarteauslesen1Click(Sender: TObject);
 begin
 FSDFileTransfer.Show;
 FSDFileTransfer.ComPort:=ComPort1;
 end;
 
-procedure TForm6.SetConfigurationEnabled(status: Boolean);
+procedure TFSmartBuoyMain.SetConfigurationEnabled(status: Boolean);
 begin
   //Disable Configuration
   CBSaveData.Enabled:=status;
@@ -176,7 +182,7 @@ begin
   EdtCsvPath.Enabled:=status;
 end;
 
-procedure TForm6.ComPort1AfterClose(Sender: TObject);
+procedure TFSmartBuoyMain.ComPort1AfterClose(Sender: TObject);
 begin
 Lbl_Status.Caption:='Getrennt';
 BtnConnect.Enabled:=true;
@@ -186,7 +192,7 @@ LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 SetConfigurationEnabled(true);
 end;
 
-procedure TForm6.ComPort1AfterOpen(Sender: TObject);
+procedure TFSmartBuoyMain.ComPort1AfterOpen(Sender: TObject);
 begin
 Lbl_Status.Caption:='Verbunden';
 BtnConnect.Enabled:=true;
@@ -195,14 +201,14 @@ LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 SetConfigurationEnabled(false);
 end;
 
-procedure TForm6.ComPort1BeforeClose(Sender: TObject);
+procedure TFSmartBuoyMain.ComPort1BeforeClose(Sender: TObject);
 begin
 Lbl_Status.Caption:='Trennen';
 BtnConnect.Enabled:=false;
 LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 end;
 
-procedure TForm6.ComPort1BeforeOpen(Sender: TObject);
+procedure TFSmartBuoyMain.ComPort1BeforeOpen(Sender: TObject);
 begin
 Lbl_Status.Caption:='Verbinden...';
 BtnConnect.Enabled:=false;
@@ -210,7 +216,7 @@ EdtPort.Enabled:=false;
 LiveViewForm.setConnectionStatus(Lbl_Status.Caption);
 end;
 
-procedure TForm6.ComPort1RxBuf(Sender: TObject; const Buffer; Count: Integer);
+procedure TFSmartBuoyMain.ComPort1RxBuf(Sender: TObject; const Buffer; Count: Integer);
 var
 s: String;
 begin
@@ -219,7 +225,7 @@ ComPort1.ReadStr(s, 10);
 //Memo1.Text:=IntToStr(Count);
 end;
 
-procedure TForm6.ComPort1RxChar(Sender: TObject; Count: Integer);
+procedure TFSmartBuoyMain.ComPort1RxChar(Sender: TObject; Count: Integer);
 var
 s: String;
 begin
@@ -227,12 +233,12 @@ ComPort1.ReadStr(s, Count);
 ShowMessage(s);
 end;
 
-procedure TForm6.LiveView1Click(Sender: TObject);
+procedure TFSmartBuoyMain.LiveView1Click(Sender: TObject);
 begin
 LiveViewForm.Show;
 end;
 
-procedure TForm6.TmrIntervalTimer(Sender: TObject);
+procedure TFSmartBuoyMain.TmrIntervalTimer(Sender: TObject);
 begin
 if(ComPort1.Connected=true) then
 begin

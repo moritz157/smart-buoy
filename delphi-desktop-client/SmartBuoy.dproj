@@ -83,7 +83,7 @@
 				<MainSource>MainSource</MainSource>
 			</DelphiCompile>
 			<DCCReference Include="SmartBuoyMain.pas">
-				<Form>Form6</Form>
+				<Form>FSmartBuoyMain</Form>
 				<FormType>dfm</FormType>
 			</DCCReference>
 			<DCCReference Include="LiveView.pas">
