@@ -18,21 +18,20 @@ object FSDFileTransfer: TFSDFileTransfer
     400)
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
+  object LblStatus: TLabel
     Left = 8
     Top = 47
-    Width = 35
+    Width = 3
     Height = 13
-    Caption = 'Status:'
   end
-  object Button1: TButton
+  object BtnStartTransmission: TButton
     Left = 8
     Top = 8
     Width = 129
     Height = 33
     Caption = #220'bertragung starten'
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = BtnStartTransmissionClick
   end
   object PBTransmission: TProgressBar
     Left = 142
@@ -41,32 +40,31 @@ object FSDFileTransfer: TFSDFileTransfer
     Height = 33
     Anchors = [akLeft, akTop, akRight]
     TabOrder = 1
-    ExplicitWidth = 323
-  end
-  object Memo1: TMemo
-    Left = 8
-    Top = 64
-    Width = 683
-    Height = 182
-    Anchors = [akLeft, akTop, akRight]
-    ScrollBars = ssVertical
-    TabOrder = 2
-    ExplicitWidth = 679
   end
   object GRData: TStringGrid
     Left = 8
-    Top = 255
+    Top = 78
     Width = 683
-    Height = 137
+    Height = 314
     Anchors = [akLeft, akTop, akRight, akBottom]
     ColCount = 1
     FixedCols = 0
     RowCount = 1
     FixedRows = 0
-    TabOrder = 3
-    ExplicitWidth = 679
-    ExplicitHeight = 139
+    Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goDrawFocusSelected, goRowSizing]
+    TabOrder = 2
     RowHeights = (
       24)
+  end
+  object BtnSaveAsCsv: TButton
+    Left = 584
+    Top = 47
+    Width = 107
+    Height = 25
+    Anchors = [akTop, akRight]
+    Caption = 'Als CSV speichern'
+    Enabled = False
+    TabOrder = 3
+    OnClick = BtnSaveAsCsvClick
   end
 end

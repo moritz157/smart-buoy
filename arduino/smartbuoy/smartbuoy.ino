@@ -184,6 +184,8 @@ void getTemp(){
   String result = "";
   result += sensors.getTempCByIndex(0);
   result += ";";
+  result += sensors.getTempCByIndex(1);
+  result += ";";
   if(saveDataToSD){
     saveValueToSD(result, false);
   }
@@ -276,7 +278,7 @@ void printSD(){
     Serial.println(F("BUOY-ID=001"));
     Serial.print(F("SIZE="));
     Serial.println(csvFile.size());
-    Serial.println(F("DATE;TIME;HUMIDITY;TEMPERATURE;LAT;LONG;HEADING;"));
+    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;HEADING;"));
     Serial.println(F("--BODY--"));
     while(csvFile.available()){
       Serial.write(csvFile.read());
