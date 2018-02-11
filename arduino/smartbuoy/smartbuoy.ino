@@ -35,7 +35,9 @@ DHT dht2 = DHT(DHT_PIN, DHT11);
 TinyGPSPlus gps;
 SoftwareSerial softwareSerial(7, 8);
 
+//Misc
 #include <MemoryFree.h>
+#include <LowPower.h>
 
 //Compass
 #define compassAddr 0x0D
@@ -93,15 +95,18 @@ void setup() {
 
   //Serial.print("freeMemory()=");
   //Serial.println(freeMemory());
-  
+  pinMode(9, INPUT);
 }
 bool saveDataToSD = true;
-bool doInterval = false;
+bool doInterval = true;
+bool doSleepInterval = false;
 
 unsigned long lastTime = 0;
+unsigned long sleepingTime = 0;
 
 void loop() {
   // put your main code here, to run repeatedly:
+  doSleepInterval = digitalRead(9);
   if(Serial.available() > 0){
     char input = Serial.read();
     bufferString+=input;
@@ -110,9 +115,12 @@ void loop() {
       bufferString="";
     }
   }
-  if(doInterval && millis() - 20000 > lastTime){
+  if(doInterval && millis() - 20000 > lastTime && millis() > 20000){
     lastTime = millis();
     doMeasurements();
+    if(doSleepInterval==true){
+      sleepingTime = millis() + 5000;
+    }
   }
   //Light
   digitalWrite(LIGHT_PIN, analogRead(PHOTO_PIN)<LIGHT_TRESHHOLD);
@@ -122,6 +130,10 @@ void loop() {
     char c = softwareSerial.read();
     //Serial.print(c);
     gps.encode(c);
+  }
+  if(sleepingTime>0 && sleepingTime<millis()){
+    sleepingTime=0;
+    goToSleep();
   }
 }
 
@@ -138,6 +150,8 @@ void evaluateCommand(String bufferString){
     Serial.println(doInterval);
   }else if(bufferString=="logSD\r"){
     printSD();
+  }else if(bufferString=="sleep\r"){
+    goToSleep();
   }
 }
 
@@ -203,6 +217,8 @@ void getPos(){
   result += String(gps.location.lat(), 6);
   result += ";";
   result += String(gps.location.lng(), 6);
+  result += ";";
+  result += String(gps.satellites.value());
   result += ";";
   if(saveDataToSD){
     saveValueToSD(result, false);
@@ -278,7 +294,7 @@ void printSD(){
     Serial.println(F("BUOY-ID=001"));
     Serial.print(F("SIZE="));
     Serial.println(csvFile.size());
-    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;HEADING;"));
+    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;HEADING;"));
     Serial.println(F("--BODY--"));
     while(csvFile.available()){
       Serial.write(csvFile.read());
@@ -288,5 +304,17 @@ void printSD(){
   }else{
     Serial.println(F("Error opening data.csv"));
   }
+}
+
+void goToSleep(){
+  softwareSerial.end();
+  Serial.println(F("Going to sleep mode..."));
+  delay(40);
+  LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);//   8Sec
+  LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_OFF);// + 8Sec
+  LowPower.powerDown(SLEEP_4S, ADC_OFF, BOD_OFF);// + 4Sec
+                                                 // = 20Sec
+  Serial.println(F("Woke up!"));
+  softwareSerial.begin(9600);
 }
 
