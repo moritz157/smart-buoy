@@ -33,7 +33,7 @@ DHT dht2 = DHT(DHT_PIN, DHT11);
 
 //GPS
 TinyGPSPlus gps;
-SoftwareSerial softwareSerial(7, 8);
+SoftwareSerial softwareSerial(8, 9);
 
 //Misc
 #include <MemoryFree.h>
@@ -46,6 +46,11 @@ SoftwareSerial softwareSerial(7, 8);
 //SD Card
 #include <SPI.h>
 #include <SD.h>
+
+//Shiftregister
+#define LATCH_PIN 6
+#define CLOCK_PIN 7
+#define DATA_PIN 5
 
 String bufferString;
 
@@ -95,7 +100,12 @@ void setup() {
 
   //Serial.print("freeMemory()=");
   //Serial.println(freeMemory());
-  pinMode(9, INPUT);
+  
+  //Shift register
+  pinMode(LATCH_PIN, OUTPUT);
+  pinMode(CLOCK_PIN, OUTPUT);
+  pinMode(DATA_PIN, OUTPUT);
+  digitalWrite(LATCH_PIN, HIGH);
 }
 bool saveDataToSD = true;
 bool doInterval = true;
@@ -103,10 +113,13 @@ bool doSleepInterval = false;
 
 unsigned long lastTime = 0;
 unsigned long sleepingTime = 0;
+unsigned long shiftTime = 0;
+
+byte shiftRegData = 0b00001110;
 
 void loop() {
   // put your main code here, to run repeatedly:
-  doSleepInterval = digitalRead(9);
+  //doSleepInterval = digitalRead(9);
   if(Serial.available() > 0){
     char input = Serial.read();
     bufferString+=input;
@@ -123,7 +136,13 @@ void loop() {
     }
   }
   //Light
-  digitalWrite(LIGHT_PIN, analogRead(PHOTO_PIN)<LIGHT_TRESHHOLD);
+  //digitalWrite(LIGHT_PIN, analogRead(PHOTO_PIN)<LIGHT_TRESHHOLD);
+  bitWrite(shiftRegData, 0, (analogRead(PHOTO_PIN)<LIGHT_TRESHHOLD));
+  //digitalWrite(LIGHT_PIN, HIGH);
+  if(millis()-300 > shiftTime){
+    changeShiftRegister(shiftRegData);
+    shiftTime = millis();  
+  }
 
   //GPS
   while(softwareSerial.available() > 0){
@@ -152,6 +171,12 @@ void evaluateCommand(String bufferString){
     printSD();
   }else if(bufferString=="sleep\r"){
     goToSleep();
+  }else if(bufferString=="sensors\r"){
+    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;HEADING;"));
+  }else if(bufferString=="shift\r"){
+    
+    Serial.println(shiftRegData);
+    //Serial.println(F("shift"));
   }
 }
 
@@ -316,5 +341,11 @@ void goToSleep(){
                                                  // = 20Sec
   Serial.println(F("Woke up!"));
   softwareSerial.begin(9600);
+}
+
+void changeShiftRegister(byte shiftData){
+  digitalWrite(LATCH_PIN, LOW);
+  shiftOut(DATA_PIN, CLOCK_PIN, MSBFIRST, shiftData);
+  digitalWrite(LATCH_PIN, HIGH);
 }
 
