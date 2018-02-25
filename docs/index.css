@@ -9,7 +9,7 @@ body {
     padding-left: 1em;
     padding-right: 1em;
     height: 100%;
-    padding-top: 8em;
+    padding-top: 6em;
 }
 
 #header h1 {
@@ -27,7 +27,7 @@ body {
     justify-content: center;
     position: absolute;
     top: calc(100% - 8em);
-    width: 97%;
+    width: 92%;
     flex-direction: column;
     text-align: center;
 }
@@ -59,6 +59,7 @@ body {
 #top-bar #github {
     display: flex;
     padding-right: 10px;
+    cursor: pointer;
 }
 
 #top-bar #github svg {
