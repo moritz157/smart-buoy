@@ -295,6 +295,7 @@ app.post("/logout", function(req, res){
  * @apiParam {Object[]} measurements The measurements
  */
 app.post("/submitMeasurement", function(req, res){
+    console.log("Req:", req.body);
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.body.token && req.body.measurements){
         auth.validateAuthToken(req.body.token)

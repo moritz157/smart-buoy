@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, CPortCtl, Vcl.StdCtrls, CPort, StrUtils,
   Vcl.ExtCtrls, Vcl.Menus, LiveView, SDFileTransfer, IdHttp, Vcl.Grids,
-  Vcl.ValEdit;
+  Vcl.ValEdit, IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient, IdIOHandler, IdIOHandlerSocket, IdIOHandlerStack, IdSSL, IdSSLOpenSSL;
 
 type
   TFSmartBuoyMain = class(TForm)
@@ -69,6 +69,8 @@ type
     procedure SDKarteauslesen1Click(Sender: TObject);
     procedure ber2Click(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure BtnReadSDClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -78,10 +80,27 @@ type
 var
   FSmartBuoyMain: TFSmartBuoyMain;
   lastPacket: Boolean;
+  curr_line: String;
 
 implementation
 
 {$R *.dfm}
+
+function getTypeId(typename: string): Integer;
+begin
+  if(typename='AIR-TEMPERATURE') then begin
+    Result:=0;
+  end else if(typename='WATER-TEMPERATURE') then begin
+    Result:=1;
+  end else if(typename='HUMIDITY') then begin
+    Result:=2;
+  end else if(typename='WINDSPEED') then begin
+    Result:=3;
+  end else if(typename='PH') then begin
+    Result:=4;
+  end else
+    Result:=-1;
+end;
 
 function PostMeasurement(url, token, measurement: string): string;
 var
@@ -91,12 +110,37 @@ var
 begin
   lParamList := TStringList.Create;
   lParamList.Add('id=1');
-  ReqJson := TStringStream.Create('{token: "'+token+'", measurements:['+measurement+']}', TEncoding.UTF8);
+  ReqJson := TStringStream.Create('{"token": "'+token+'", "measurements":['+measurement+']}', TEncoding.UTF8);
+  //ReqJson := TStringStream.Create('{"token": "e5933dis5z1cswnifot5yab78z"}');
 
   lHTTP := TIdHTTP.Create;
   try
-    lHTTP.Request.ContentType:='application/json';
-    Result := lHTTP.Post(url+'/submitMeasurements', ReqJson);
+    try
+      lHTTP.Request.ContentType:='application/json';
+      Result := lHTTP.Post(url+'/submitMeasurement', ReqJson);
+      except
+        on E: EIdHTTPProtocolException do begin
+          ShowMessage('HTTP request failed'#13 + IntToStr(E.ErrorCode) + ' ' + E.Message);
+        end;
+        {on E: EIdOpenSSLAPISSLError do
+        begin
+          ShowMessage('OpenSSL API failure'#13 + E.ClassName + #13'Result Code: ' + IntToStr(E.RetCode) + #13'Error Code: ' + IntToStr(E.ErrorCode));
+        end;
+        on E: EIdOpenSSLAPICryptoError do
+        begin
+          ShowMessage('OpenSSL crypto failure'#13 + E.ClassName + #13'Error Code: ' + IntToStr(E.ErrorCode));
+        end;
+        on E: EIdOpenSSLError do
+        begin
+          ShowMessage('Unknown OpenSSL error'#13 + E.ClassName + #13 + E.Message);
+        end;
+        on E: EIdSocketError do begin
+          ShowMessage('Socket error'#13 + E.ClassName + #13'Error Code: ' + IntToStr(E.LastError) + ' ' + E.Message);
+        end;     }
+        on E: Exception do begin
+          ShowMessage('Unexpected error'#13 + E.ClassName + #13 + E.Message);
+        end;
+      end;
   finally
     lHTTP.Free;
     lParamList.Free;
@@ -147,6 +191,11 @@ begin
 end;
 end;
 
+procedure TFSmartBuoyMain.BtnReadSDClick(Sender: TObject);
+begin
+ComPort1.WriteStr('logSD'#$D#$A)
+end;
+
 procedure TFSmartBuoyMain.Button1Click(Sender: TObject);
 begin
 PostMeasurement(EdtServerIP.Text, Edt_Token.Text, '{"type":0,"value":44.0815}');
@@ -187,16 +236,61 @@ end;
 end;
 
 procedure TFSmartBuoyMain.ComDataPacket1Packet(Sender: TObject; const Str: string);
+var
+  tmp_list: TStringList;
+  i: Integer;
+  measurementJson: string;
 begin
-if(lastPacket) then LblTemp.Caption:='';
-if(ContainsText(LblTemp.Caption+Str, #$D#$A) = true) then
+if(lastPacket) then
+begin
+  Delete(curr_line, 1, Pos(#$A, curr_line));
+end;
+
+if(ContainsText(curr_line+Str, #$D#$A) = true) then
 begin
 lastPacket:=true;
-if(Memo1.Lines.Count=1) then
-  VLE_Sensors.Strings.DelimitedText:=Memo1.Lines[0];
+try
+  try
+    tmp_list:=TStringList.Create;
+    tmp_list.Delimiter:='|';
+    tmp_list.DelimitedText:=ReplaceStr(curr_line, ' ', '');
+    if(tmp_list[0]='m') then
+    begin
+      //ShowMessage('Measurement');
+      tmp_list.Delimiter:=';';
+      tmp_list.DelimitedText:=tmp_list[1];
+      measurementJson:='';
+      for i := 0 to tmp_list.Count-1 do
+      begin
+        if(tmp_list[i]<>'') then
+        begin
+          VLE_Sensors.Strings[i]:=VLE_Sensors.Cells[0, i+1]+'='+tmp_list[i];
+          if(getTypeId(VLE_Sensors.Cells[0, i+1])<>-1) AND (tmp_list[i]<>'NAN') then
+            measurementJson:=measurementJson+'{"type":'+inttostr(getTypeId(VLE_Sensors.Cells[0, i+1]))+', "value":'+tmp_list[i]+'},';
+        end;
+      end;
+      Delete(measurementJson, Length(measurementJson), 1);
+      if(CBUploadToServer.Checked) then
+        PostMeasurement(EdtServerIP.Text, Edt_Token.Text, measurementJson);
+    end else if(tmp_list[0]='sensors') then
+    begin
+      tmp_list.Delimiter:=';';
+      tmp_list.DelimitedText:=tmp_list[1];
+      for i := 0 to tmp_list.Count-1 do
+        VLE_Sensors.InsertRow(tmp_list[i], '', true);
+      //ShowMessage('Sensors');
+    end;
+  except
+    on E: Exception do begin
+      ShowMessage('An unexpected error occured');
+    end;
+  end;
+finally
+  tmp_list.Free;
+end;
 if (CBSaveData.Checked=true) AND (EdtCsvPath.Text<>'') then addLineToFile(EdtCsvPath.Text, Memo1.Lines[Memo1.Lines.Count-1]);
 end else lastPacket:=false;
-LblTemp.Caption:=LblTemp.Caption+Str;
+curr_line:=curr_line+Str;
 Memo1.Text:=Memo1.Text + Str;
 FSDFileTransfer.onPacket(Str);
 end;
@@ -266,6 +360,12 @@ s: String;
 begin
 ComPort1.ReadStr(s, Count);
 ShowMessage(s);
+end;
+
+procedure TFSmartBuoyMain.FormDestroy(Sender: TObject);
+begin
+ComPort1.Free;
+ComDataPacket1.Free;
 end;
 
 procedure TFSmartBuoyMain.LiveView1Click(Sender: TObject);

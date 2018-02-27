@@ -130,6 +130,7 @@ void loop() {
   }
   if(doInterval && millis() - 20000 > lastTime && millis() > 20000){
     lastTime = millis();
+    Serial.print(F("m|"));
     doMeasurements();
     if(doSleepInterval==true){
       sleepingTime = millis() + 5000;
@@ -161,6 +162,7 @@ void evaluateCommand(String bufferString){
     //Serial.print(F("freeMemory()="));
     //Serial.println(freeMemory());
     //printMagnetic();
+    Serial.print(F("m|"));
     doMeasurements();
     //Serial.println(F("Did measurements"));
     //printMagnetic();
@@ -172,7 +174,7 @@ void evaluateCommand(String bufferString){
   }else if(bufferString=="sleep\r"){
     goToSleep();
   }else if(bufferString=="sensors\r"){
-    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;PH;WINDSPEED;HEADING;"));
+    Serial.println(F("sensors|DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;PH;WINDSPEED;HEADING;"));
   }else if(bufferString=="shift\r"){
     
     Serial.println(shiftRegData);
@@ -256,9 +258,9 @@ void getHumidity(){
 void getTemp(){
   sensors.requestTemperatures();
   String result = "";
-  result += sensors.getTempCByIndex(0);
-  result += ";";
   result += sensors.getTempCByIndex(1);
+  result += ";";
+  result += sensors.getTempCByIndex(0);
   result += ";";
   if(saveDataToSD){
     saveValueToSD(result, false);

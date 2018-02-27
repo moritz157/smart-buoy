@@ -4396,6 +4396,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
   OldCreateOrder = False
   Visible = True
   WindowState = wsMaximized
+  OnDestroy = FormDestroy
   DesignSize = (
     783
     522)
@@ -4449,6 +4450,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Height = 25
       Caption = 'SD-Karte auslesen'
       TabOrder = 3
+      OnClick = BtnReadSDClick
     end
     object VLE_Sensors: TValueListEditor
       Left = 22
@@ -4578,6 +4580,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Width = 137
       Height = 17
       Caption = 'Werte lokal speichern'
+      Enabled = False
       TabOrder = 0
     end
     object EdtCsvPath: TEdit
@@ -4611,7 +4614,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Width = 130
       Height = 21
       TabOrder = 4
-      Text = '127.0.0.1'
+      Text = 'http://127.0.0.1:8888'
     end
     object Edt_Token: TEdit
       Left = 208
@@ -4620,7 +4623,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Height = 21
       PasswordChar = '*'
       TabOrder = 5
-      Text = 'test'
+      Text = 'e5933dis5z1cswnifot5yab78z'
     end
     object Button1: TButton
       Left = 16
@@ -4629,6 +4632,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Height = 25
       Caption = 'Button1'
       TabOrder = 6
+      Visible = False
       OnClick = Button1Click
     end
   end

@@ -48,16 +48,20 @@ module.exports = {
 
     submitMeasurement: function(station, measurements){
         console.log("Subscriptions:", subscriptions);
-        for(var i=0;i<subscriptions[station].length;i++){
-            if(io.sockets.connected[subscriptions[station][i]]){
-                var result = [{}];
-                for(var ii=0;ii<measurements.length;ii++){
-                    result[0][measurements[ii].type]=measurements[ii].value;
+        if(subscriptions && subscriptions[station] && subscriptions[station].length>0){
+            for(var i=0;i<subscriptions[station].length;i++){
+                if(io.sockets.connected[subscriptions[station][i]]){
+                    var result = [{}];
+                    for(var ii=0;ii<measurements.length;ii++){
+                        result[0][measurements[ii].type]=measurements[ii].value;
+                    }
+                    console.log("Sending new measurements to subscribers");
+                    io.sockets.connected[subscriptions[station][i]].emit("newMeasurement", station, result);
+                }else{
+                    console.log("No subscriptions. Station: "+station);
                 }
-                io.sockets.connected[subscriptions[station][i]].emit("newMeasurement", station, result);
-            }else{
-                console.log("No subscriptions. Station: "+station);
             }
         }
+        
     }
 }
