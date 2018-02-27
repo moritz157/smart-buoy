@@ -172,7 +172,7 @@ void evaluateCommand(String bufferString){
   }else if(bufferString=="sleep\r"){
     goToSleep();
   }else if(bufferString=="sensors\r"){
-    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;HEADING;"));
+    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;PH;WINDSPEED;HEADING;"));
   }else if(bufferString=="shift\r"){
     
     Serial.println(shiftRegData);
@@ -185,6 +185,8 @@ void doMeasurements(){
   getHumidity();
   getTemp();
   getPos();
+  getPh();
+  getWindspeed();
   getMagnetic();
   
   if(saveDataToSD){
@@ -207,6 +209,39 @@ void getDateTime(){
   }
   Serial.print(result);
   //return result;
+}
+
+void getPh(){
+  String result = String(analogRead(A1));
+  
+  result += F(";");
+  if(saveDataToSD){
+    saveValueToSD(result, false);
+  }
+  Serial.print(result);
+}
+
+void getWindspeed() {
+  unsigned long start = millis();
+  int counter = 0;
+  bool released = true;
+  while(start+1000 > millis()){
+    if(analogRead(A2)<500){
+      if(released){
+        counter++;
+        released = false;
+      }
+    }else{
+      released=true;
+    }
+  }                   //     cm/s     km/s   km/h
+  float kmh = counter * 56.55 / 100000 * 3600;
+  String result = String(kmh);
+  result += F(";");
+  if(saveDataToSD){
+    saveValueToSD(result, false);
+  }
+  Serial.print(result);
 }
 
 void getHumidity(){
@@ -319,7 +354,7 @@ void printSD(){
     Serial.println(F("BUOY-ID=001"));
     Serial.print(F("SIZE="));
     Serial.println(csvFile.size());
-    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;HEADING;"));
+    Serial.println(F("DATE;TIME;HUMIDITY;AIR-TEMPERATURE;WATER-TEMPERATURE;LAT;LONG;SATELLITES;PH;WINDSPEED;HEADING;"));
     Serial.println(F("--BODY--"));
     while(csvFile.available()){
       Serial.write(csvFile.read());

@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, CPortCtl, Vcl.StdCtrls, CPort, StrUtils,
-  Vcl.ExtCtrls, Vcl.Menus, LiveView, SDFileTransfer;
+  Vcl.ExtCtrls, Vcl.Menus, LiveView, SDFileTransfer, IdHttp, Vcl.Grids,
+  Vcl.ValEdit;
 
 type
   TFSmartBuoyMain = class(TForm)
@@ -19,7 +20,6 @@ type
     GBConnection: TGroupBox;
     Label1: TLabel;
     Lbl_Status: TLabel;
-    Label2: TLabel;
     EdtInterval: TEdit;
     BtnInterval: TButton;
     TmrInterval: TTimer;
@@ -48,6 +48,10 @@ type
     LiveView1: TMenuItem;
     Verlauf1: TMenuItem;
     SDKarteauslesen1: TMenuItem;
+    Lbl_Password: TLabel;
+    Edt_Token: TEdit;
+    Button1: TButton;
+    VLE_Sensors: TValueListEditor;
     procedure BtnConnectClick(Sender: TObject);
     procedure BtnGetDataClick(Sender: TObject);
     procedure ComPort1RxChar(Sender: TObject; Count: Integer);
@@ -64,6 +68,7 @@ type
     procedure LiveView1Click(Sender: TObject);
     procedure SDKarteauslesen1Click(Sender: TObject);
     procedure ber2Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -77,6 +82,27 @@ var
 implementation
 
 {$R *.dfm}
+
+function PostMeasurement(url, token, measurement: string): string;
+var
+  lHTTP: TIdHTTP;
+  lParamList: TStringList;
+  ReqJson: TStringStream;
+begin
+  lParamList := TStringList.Create;
+  lParamList.Add('id=1');
+  ReqJson := TStringStream.Create('{token: "'+token+'", measurements:['+measurement+']}', TEncoding.UTF8);
+
+  lHTTP := TIdHTTP.Create;
+  try
+    lHTTP.Request.ContentType:='application/json';
+    Result := lHTTP.Post(url+'/submitMeasurements', ReqJson);
+  finally
+    lHTTP.Free;
+    lParamList.Free;
+    ReqJson.Free;
+  end;
+end;
 
 procedure addLineToFile(path, line: String);
 var sl: TStringList;
@@ -121,6 +147,11 @@ begin
 end;
 end;
 
+procedure TFSmartBuoyMain.Button1Click(Sender: TObject);
+begin
+PostMeasurement(EdtServerIP.Text, Edt_Token.Text, '{"type":0,"value":44.0815}');
+end;
+
 procedure TFSmartBuoyMain.ber2Click(Sender: TObject);
 begin
 ShowMessage('Smart Buoy Desktop Version: 1.0' + #$D#$A + 'Lizenziert unter der Apache License 2.0' + #$D#$A + 'Copyright ' + char(169) + ' 2018 Moritz Ahrens' + #$D#$A + 'https://moritz157.github.io/smart-buoy');
@@ -148,6 +179,8 @@ procedure TFSmartBuoyMain.BtnGetDataClick(Sender: TObject);
 begin
 if(ComPort1.Connected=true) then
 begin
+  if(VLE_Sensors.Strings.Count=0) then
+    ComPort1.WriteStr('sensors'+chr(13));
   //LblTemp.Caption:='';
   ComPort1.WriteStr('a'+chr(13));
 end;
@@ -159,6 +192,8 @@ if(lastPacket) then LblTemp.Caption:='';
 if(ContainsText(LblTemp.Caption+Str, #$D#$A) = true) then
 begin
 lastPacket:=true;
+if(Memo1.Lines.Count=1) then
+  VLE_Sensors.Strings.DelimitedText:=Memo1.Lines[0];
 if (CBSaveData.Checked=true) AND (EdtCsvPath.Text<>'') then addLineToFile(EdtCsvPath.Text, Memo1.Lines[Memo1.Lines.Count-1]);
 end else lastPacket:=false;
 LblTemp.Caption:=LblTemp.Caption+Str;

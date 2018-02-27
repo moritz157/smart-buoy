@@ -4403,19 +4403,12 @@ object FSmartBuoyMain: TFSmartBuoyMain
   TextHeight = 13
   object GBData: TGroupBox
     Left = 281
-    Top = 264
+    Top = 144
     Width = 489
-    Height = 250
+    Height = 370
     Anchors = [akTop, akRight, akBottom]
     Caption = 'Werte'
     TabOrder = 0
-    object Label2: TLabel
-      Left = 22
-      Top = 91
-      Width = 60
-      Height = 13
-      Caption = 'Temperatur:'
-    end
     object LblTemp: TLabel
       Left = 88
       Top = 72
@@ -4456,6 +4449,16 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Height = 25
       Caption = 'SD-Karte auslesen'
       TabOrder = 3
+    end
+    object VLE_Sensors: TValueListEditor
+      Left = 22
+      Top = 58
+      Width = 443
+      Height = 295
+      TabOrder = 4
+      ColWidths = (
+        150
+        287)
     end
   end
   object GBConnection: TGroupBox
@@ -4511,13 +4514,14 @@ object FSmartBuoyMain: TFSmartBuoyMain
     end
   end
   object GBConfig: TGroupBox
-    Left = 281
-    Top = 112
+    Left = 721
+    Top = 357
     Width = 489
     Height = 146
     Anchors = [akTop, akRight]
     Caption = 'Arduino Konfiguration'
     TabOrder = 2
+    Visible = False
     object CBSaveOnSD: TCheckBox
       Left = 16
       Top = 26
@@ -4543,7 +4547,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
     Left = 281
     Top = 8
     Width = 489
-    Height = 98
+    Height = 130
     Anchors = [akTop, akRight]
     Caption = 'Lokale Konfiguration'
     TabOrder = 3
@@ -4560,6 +4564,13 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Width = 14
       Height = 13
       Caption = 'IP:'
+    end
+    object Lbl_Password: TLabel
+      Left = 169
+      Top = 75
+      Width = 33
+      Height = 13
+      Caption = 'Token:'
     end
     object CBSaveData: TCheckBox
       Left = 16
@@ -4601,6 +4612,24 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Height = 21
       TabOrder = 4
       Text = '127.0.0.1'
+    end
+    object Edt_Token: TEdit
+      Left = 208
+      Top = 72
+      Width = 129
+      Height = 21
+      PasswordChar = '*'
+      TabOrder = 5
+      Text = 'test'
+    end
+    object Button1: TButton
+      Left = 16
+      Top = 96
+      Width = 75
+      Height = 25
+      Caption = 'Button1'
+      TabOrder = 6
+      OnClick = Button1Click
     end
   end
   object ComPort1: TComPort
