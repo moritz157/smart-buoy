@@ -92,6 +92,7 @@ function updateSelected(){
             if(status=="success"){
                 measurements=data;
                 getTypes(data, function(types){
+                    updateFullscreenMeasurements(measurements, types);
                     for(var i=0;i<types.length;i++){
                         addCard(types[i].name, measurements, types[i]);
                     }
@@ -136,8 +137,12 @@ function clearCards(showText){
             $("#noSelection").show();
         }, 50);
     }else{
-        $("#sidebar").html("<div id='close-wrapper'><i id='realtime' class='material-icons' onclick='toggleRealtime()'>timeline</i> Echtzeitaktualisierungen aktivieren<i id='closeSidebar' class='material-icons' onclick='clearCards(true)'>close</i></div>");
+        $("#sidebar").html("<span id='activate-fullscreen' onclick='toggleFullscreen()'>Im Vollbildmodus ansehen</span><div id='close-wrapper'><i id='realtime' class='material-icons' onclick='toggleRealtime()'>timeline</i> Echtzeitaktualisierungen aktivieren<i id='closeSidebar' class='material-icons' onclick='clearCards(true)'>close</i></div>");
     }
+}
+
+function toggleFullscreen() {
+    $("#fullscreen-data").toggleClass("active");
 }
 
 function toggleRealtime(){
@@ -245,5 +250,97 @@ function addMeasurement(measurement){
             charts[obj].data.datasets[0].data.push(measurement[obj]);
             charts[obj].update();
         }
+    }
+}
+
+var fullscreenChart;
+
+function buildFullscreenChart(){
+    var data = {
+        labels: [],
+        datasets:[]
+    };
+    /*
+    for(var i = 0;i < measurements.length;i++){
+        if(measurements[i].hasOwnProperty(type.id)){
+            data.labels.push("");
+            data.datasets[0].data.push(measurements[i][type.id]);
+        }
+    }
+    console.log(data);*/
+    
+    var options = {
+        scales: {
+            yAxes: [
+               /* {
+                    display: true,
+                    labelString: type.name+' in '+type.unit,
+                    ticks: {
+                        // Include a dollar sign in the ticks
+                        callback: function(value, index, values) {
+                            return value.toFixed(2)+" "+type.unit;
+                        }
+                    }
+                }*/
+            ]
+        }
+    };
+    
+    var ctx = $("#fullscreen-chart-canvas");
+    fullscreenChart = new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: options
+    });
+    //charts[type.id]=myLineChart;
+}
+buildFullscreenChart();
+
+function updateFullscreenMeasurements(measurements, types){
+    if(types){
+        console.log("[full] ", types);
+        for(var i=0;i<types.length;i++){
+            var lineColor = getRandomColor();
+            //var backgroundColor = hexToRgba(lineColor, 0.5);
+
+            var title = types[i].name + " in " + types[i].unit;
+            fullscreenChart.data.labels.push("");
+            fullscreenChart.data.datasets[types[i].id]={
+                "label":title, 
+                borderColor:lineColor,
+                backgroundColor: "rgba(0, 0, 0, 0)",
+                data: [13.2]
+            };
+
+            /*fullscreenChart.options.scales.yAxes.push({
+                display: true,
+                labelString: title,
+                ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, values) {
+                        return value.toFixed(2)+" "+types[i].unit;
+                    }
+                }
+            });*/
+        }
+    }
+    fullscreenChart.update();
+    if(measurements){
+        console.log("[fullscreen] Measurements:", measurements);
+        //return;
+        for(var i=0;i<measurements.length;i++){
+            if(new Date(measurements[i].timestamp).getTime()+7*3600000>Date.now()){
+                for(var obj in measurements[i]){
+                    //console.log(obj);
+                    if((obj != "timestamp") && (measurements[i].hasOwnProperty(obj))){
+                        fullscreenChart.data.labels.push("");
+                        fullscreenChart.data.datasets[obj].data.push(measurements[i][obj]);
+                    }
+                }
+            }
+            
+            
+        }
+        fullscreenChart.update();
     }
 }

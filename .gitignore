@@ -57,3 +57,5 @@ typings/
 # dotenv environment variables file
 .env
 
+#Delphi history
+delphi-desktop-client/__history/
