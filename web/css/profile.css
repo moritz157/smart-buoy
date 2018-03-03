@@ -6,6 +6,8 @@ body {
 
 header {
     height: 2.6em;
+    z-index: 2;
+    position: relative;
 }
 
 header nav {
@@ -33,52 +35,45 @@ a {
 #main {
     padding-left: 12px;
     display: flex;
+    flex-direction: column;
     position: relative;
-    top: 15px;
-    height: calc(100% - 2.6em - 15px);
+    height: calc(100% - 2.6em);
+    z-index: 1;
+    background-color: #fbfbfb
 }
 
 #main #nav {
     display: flex;
-    flex-direction: column;
-    max-width: 11em;
-    border: 1px solid #dedede;
-    border-radius: 3px;
-    top: 1.7em;
+    flex-direction: row;
+    margin-top: 1.7em;
     position: relative;
-    height: 5.4em;
 }
 
 #main #nav a {
     padding: 5px;
     color: #0366d6;
-    padding-right: 20px;
-}
-
-#main #nav a:not(:last-child) {
-    border-bottom: 1px solid #adadad;
+    padding-right: 10px;
+    padding-left: 10px;
 }
 
 #main #content-wrapper {
-    margin-left: 20px;
     width: calc(100% - 32px);
     position: relative;
+    background-color: white;
+    box-shadow: -1px 1px 4px #0404040a;
+    padding: 10px;
 }
 
-#main #content-wrapper div {
-    position: absolute;
-    z-index: 1;
+#main #content-wrapper > div {
+    position: relative;
+    display: none;
     background-color: white;
     width: 100%;
-    height: 100%;
-}
-
-#main #content-wrapper #account {
-    z-index: 2;
+    height: auto;
 }
 
 #main #content-wrapper div:target {
-    z-index: 3;
+    display: block;
 }
 
 #main #content-wrapper div p {
@@ -89,7 +84,7 @@ a {
     width: 12em;
     height: 6.7em;
     border-radius: 2px;
-    box-shadow: #dededed9 0px 0px 6px 0px;
+    /**box-shadow: #dededed9 0px 0px 6px 0px;**/
     padding: 10px;
     margin-left: 5px;
     position: relative;
@@ -116,6 +111,6 @@ a {
     height: 36em;
     display: flex;
     flex-wrap: wrap;
-    height: calc(100% - 3.67em - 3px) !important;
+    height: 80%;
     align-content: flex-start;
 }
