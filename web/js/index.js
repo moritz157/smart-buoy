@@ -1,3 +1,5 @@
+checkAuthOnIndex();
+
 var stations;
 var measurements = [{"0":44.082,"timestamp":"2017-10-24T18:11:04.000Z"},{"0":44.082,"timestamp":"2017-10-24T18:14:14.000Z"},{"0":44.082,"timestamp":"2017-10-24T18:14:46.000Z"},{"0":44.082,"1":13.253,"2":83.235,"timestamp":"2017-10-24T19:00:17.000Z"}];
 var mymap = L.map('map').setView([53.574257, 10.002596], 11);

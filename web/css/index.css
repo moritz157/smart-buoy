@@ -20,6 +20,14 @@ header nav .left, header nav .right {
     padding: 12px;
 }
 
+header nav span:not(:last-child), header nav a:not(:last-child) {
+    margin-right: 7px;
+}
+
+header nav span:not(:first-child), header nav a:not(:first-child) {
+    margin-left: 7px;
+}
+
 a {
     text-decoration: none !important;
     color: black;
@@ -138,6 +146,10 @@ i.material-icons {
 
 #fullscreen-data #fullscreen-top-bar #close-fullscreen {
     cursor: pointer;
+}
+
+.hide {
+    display: none;
 }
 
 /*Responsive*/
