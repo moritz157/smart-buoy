@@ -61,7 +61,7 @@ module.exports = {
                 else {
                     result = result[0];
                     if(result){
-                        var user = new User(result.username, result.password, result.salt, result.permission_level, result.activated, result.id)
+                        var user = new User(result.username, result.password, result.salt, result.permission_level, result.activated, result.registered, result.id)
                         resolve(user);
                     }else{
                         reject(undefined);
