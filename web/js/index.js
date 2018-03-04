@@ -176,8 +176,8 @@ function addCard(title, measurements, type){
     card.innerHTML = inner;
     $("#sidebar").append(card);
 
-    var lineColor = getRandomColor();
-    var backgroundColor = hexToRgba(lineColor, 0.5);
+    var lineColor = utils.getRandomColor();
+    var backgroundColor = utils.hexToRgba(lineColor, 0.5);
     console.log(backgroundColor);
     var data = {
         labels: [],
@@ -223,25 +223,6 @@ function addCard(title, measurements, type){
         options: options
     });
     charts[type.id]=myLineChart;
-}
-
-function getRandomColor(){
-    return colors[getRandomInt(0, colors.length-1)]
-}
-
-function getRandomInt(min, max) {
-min = Math.ceil(min);
-max = Math.floor(max);
-return Math.floor(Math.random() * (max - min)) + min;
-}
-
-function hexToRgba(hex, opacity) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? `
-        rgba(`+parseInt(result[1], 16)+`,
-        `+parseInt(result[2], 16)+`,
-        `+parseInt(result[3], 16)+`,
-        `+opacity+`)` : null;
 }
 
 function addMeasurement(measurement){
@@ -302,7 +283,7 @@ function updateFullscreenMeasurements(measurements, types){
     if(types){
         console.log("[full] ", types);
         for(var i=0;i<types.length;i++){
-            var lineColor = getRandomColor();
+            var lineColor = utils.getRandomColor();
             //var backgroundColor = hexToRgba(lineColor, 0.5);
 
             var title = types[i].name + " in " + types[i].unit;
