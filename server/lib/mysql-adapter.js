@@ -154,6 +154,18 @@ module.exports = {
             });
         });
     },
+    getStats: function(session_id){
+        return new Promise(function(resolve, reject){
+            var query = "SELECT stationen.id AS station_id, COUNT(DISTINCT measurement_values.timestamp) AS measurement_count FROM ((sessions INNER JOIN stationen ON stationen.creator_id = sessions.user_id) INNER JOIN measurement_values ON measurement_values.station_id=stationen.id) WHERE `session_id`="+con.escape(session_id)+" GROUP BY `stationen`.`id`";
+            con.query(query, function(err, result){
+                if(err){
+                    reject(err);
+                }else{
+                    resolve(result);
+                }
+            });
+         })
+    },
     insertMeasurements: function(station_id, measurements){
         return new Promise(function(resolve, reject){
             var sql = "";

@@ -83,6 +83,31 @@ module.exports = {
             })
         });
 
+        /**
+         * @api {post} /stats getStats
+         * @apiGroup user
+         * @apiDescription Gets the user's stats
+         * @apiParam {String} session_id
+         */
+        apiRoutes.post("/stats", function(req, res){
+            var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+            mysql.getStats(req.body.session_id)
+            .then((result) => {
+                logger.log({
+                    level: 'info',
+                    message: '"/user/stats" requested. No errors. IP: '+ip+' UserID: '+req.decoded.id
+                });
+                res.send(result);
+            })
+            .catch((err) => {
+                logger.log({
+                    level: 'info',
+                    message: '"/user/stats" requested. An error occured. IP: '+ip+' Error: '+err
+                });
+                res.send(err);
+            })
+        });
+
         return apiRoutes;
     }
 }
