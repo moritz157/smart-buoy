@@ -91,7 +91,7 @@ module.exports = {
          */
         apiRoutes.post("/stats", function(req, res){
             var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-            mysql.getStats(req.body.session_id)
+            mysql.getStats(req.decoded.id)
             .then((result) => {
                 logger.log({
                     level: 'info',
