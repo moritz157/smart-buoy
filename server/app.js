@@ -145,13 +145,13 @@ app.post("/stationAuthToken", function(req, res){
 });
 
 /**
- * @api {get} /measurements/:station getMeasurements
+ * @api {get} /measurementsOld/:station getMeasurements
  * @apiGroup main
  * @apiDescription Get all measurements of a specified station
  * 
  * @apiParam {Number} station The station's id
  */
-app.get("/measurements/:station", function(req, res){
+app.get("/measurementsOld/:station", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.params.station){
         console.log("Station:", req.params.station)
@@ -159,28 +159,28 @@ app.get("/measurements/:station", function(req, res){
         .then((result) => {
             logger.log({
                 level: 'info',
-                message: '"/measurements/'+req.params.station+'" requested. No errors. IP: '+ip
+                message: '"/measurementsOld/'+req.params.station+'" requested. No errors. IP: '+ip
             });
             res.send(result);
         })
         .catch((err) => {
             logger.log({
                 level: 'error',
-                message: '"/measurements/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
+                message: '"/measurementsOld/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
             });
             res.send("Error:", err);
         })
     }else{
         logger.log({
             level: 'error',
-            message: '"/measurements/:station" requested. An error occured. IP: '+ip+" Error: Bad request"
+            message: '"/measurementsOld/:station" requested. An error occured. IP: '+ip+" Error: Bad request"
         });
         res.send("Bad request");
     }
 });
 
 /**
- * @api {get} /measurementsByTime/:station
+ * @api {get} /measurements/:station
  * @apiGroup main
  * @apiDescription All measurements of a specified station in a specified timespan and grouped by a specified time interval
  * 
@@ -190,25 +190,55 @@ app.get("/measurements/:station", function(req, res){
  * @apiParam (Query-Parameters) {Date} until The end of the selected timespan
  * @apiParam (Query-Parameters) {Number} interval The grouping interval in seconds
  */
-app.get("/measurementsByTime/:station", function(req, res){
+app.get("/measurements/:station", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
     if(req.params.station){
-        console.log("Station:", req.params.station);
+        /*console.log("Station:", req.params.station);
         console.log("From:", req.query.from);
         console.log("Until:", req.query.until);
-        console.log("Interval:", req.query.interval);
+        console.log("Interval:", req.query.interval);*/
         mysql.listMeasurements(req.params.station, {from: req.query.from, until: req.query.until, interval: req.query.interval})
         .then((result) => {
             logger.log({
                 level: 'info',
-                message: '"/measurementsByTime/'+req.params.station+'" requested. No errors. IP: '+ip
+                message: '"/measurements/'+req.params.station+'" requested. No errors. IP: '+ip
             });
-            res.send(result);
+            if(req.query.format && req.query.format=="csv"){
+                console.log("Format=csv");
+                mysql.listTypes()
+                .then((types) => {
+                    res.setHeader("Content-Type", "application/csv");
+                    res.setHeader('Content-disposition', 'attachment; filename=smart-buoy-data.csv');
+                    res.write("timestamp;");
+                    console.log("Got types", types);
+                    for(var i=0;i<types.length;i++){
+                        res.write(types[i].name+" in "+types[i].unit+";");
+                    }
+                    res.write("\n");
+                    for(var i=0;i<result.length;i++){
+                        res.write(new Date(result[i].timestamp).toJSON());
+                        for(var ii=0;ii<types.length;ii++){
+                            if(result[i][types[ii].id]){
+                                res.write(result[i][types[ii].id].toString());
+                            }
+                            res.write(";");
+                        }
+                        res.write("\n");
+                    }
+                    res.end();
+                })
+                .catch((err) => {
+                    console.log("Error", err);
+                    res.send(err);
+                })
+            }else{
+                res.send(result);
+            }
         })
         .catch((err) => {
             logger.log({
                 level: 'error',
-                message: '"/measurementsByTime/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
+                message: '"/measurements/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
             });
             res.send("Error:", err);
         });

@@ -89,9 +89,9 @@ function updateSelected(query){
         clearCards(false);
         charts = {};
         //document.getElementById("selected").innerHTML = selected.name;
-        var restPath = restEndpoint+"/measurementsByTime/"+selected.id;
+        var restPath = restEndpoint+"/measurements/"+selected.id;
         if(query){
-            restPath = restEndpoint+"/measurementsByTime/"+selected.id+"?"+query;
+            restPath = restEndpoint+"/measurements/"+selected.id+"?"+query;
         }
         $.get(restPath, function(data, status){
             console.log("Data:", data, "Status:", status);
@@ -112,7 +112,7 @@ function updateSelected(query){
 
 function updateData(){
     if(selected){
-        $.get(restEndpoint+"/measurementsByTime/"+selected.id, function(data, status){
+        $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
             console.log("Data:", data, "Status:", status);
             if(status=="success"){
                 console.log("New Measurements:", data.length-measurements.length, data.slice(measurements.length));
@@ -375,4 +375,10 @@ function getMeasurementQuery(){
         queryString+="&interval="+interval;
     }
     return queryString;
+}
+
+function downloadAsCSV(){
+    if(selected){
+        location.href="http://localhost:8888/measurements/"+selected+"?format=csv"
+    }
 }
