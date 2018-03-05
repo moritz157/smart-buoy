@@ -179,6 +179,44 @@ app.get("/measurements/:station", function(req, res){
     }
 });
 
+/**
+ * @api {get} /measurementsByTime/:station
+ * @apiGroup main
+ * @apiDescription All measurements of a specified station in a specified timespan and grouped by a specified time interval
+ * 
+ * @apiParam (URL-Parameters) {Number} station The station's id
+ * 
+ * @apiParam (Query-Parameters) {Date} from The start of the selected timespan
+ * @apiParam (Query-Parameters) {Date} until The end of the selected timespan
+ * @apiParam (Query-Parameters) {Number} interval The grouping interval in seconds
+ */
+app.get("/measurementsByTime/:station", function(req, res){
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    if(req.params.station){
+        console.log("Station:", req.params.station);
+        console.log("From:", req.query.from);
+        console.log("Until:", req.query.until);
+        console.log("Interval:", req.query.interval);
+        mysql.listMeasurements(req.params.station, {from: req.query.from, until: req.query.until, interval: req.query.interval})
+        .then((result) => {
+            logger.log({
+                level: 'info',
+                message: '"/measurementsByTime/'+req.params.station+'" requested. No errors. IP: '+ip
+            });
+            res.send(result);
+        })
+        .catch((err) => {
+            logger.log({
+                level: 'error',
+                message: '"/measurementsByTime/'+req.params.station+'" requested. An error occured. IP: '+ip+" Error: "+err
+            });
+            res.send("Error:", err);
+        });
+    }else{
+        console.log("No station");
+    }
+});
+
 //Auth endpoints
 const auth = require("./lib/auth.js");
 

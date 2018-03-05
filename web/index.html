@@ -33,11 +33,68 @@
             <div id="map" onclick="clearCards(true)">
             </div>
             <div id="sidebar">
-                <span id="noSelection">Keine Station ausgewählt</span>
+                <div id="sidebar-actions">
+                        <span>Zeitraum: </span>
+                        <select id="side-from-select">
+                            <option value="86400000">1 Tag</option>
+                            <option value="172800000">Letzte 2 Tage</option>
+                            <option value="604800000">Letzte 7 Tage</option>
+                            <option value="2592000000">Letzte 30 Tage</option>
+                            <option value="7776000000">Letzte 3 Monate</option>
+                            <option value="31536000000">Letztes Jahr</option>
+                        </select><br>
+                        <span>Gruppierung</span>
+                        <select id="side-interval-select">
+                            <option value="0">Keine</option>
+                            <option value="300">5 Minuten</option>
+                            <option value="600">10 Minuten</option>
+                            <option value="1800">30 Minuten</option>
+                            <option value="3600">1 Stunde</option>
+                            <option value="43200">12 Stunden</option>
+                            <option value="86400">1 Tag</option>
+                            <option value="604800">1 Woche</option>
+                            <option value="2592000">1 Monat</option>
+                        </select><br>
+                        <span id="activate-fullscreen" onclick="toggleFullscreen()">Im Vollbildmodus ansehen</span>
+                        <div id="close-wrapper">
+                            <i id="realtime" class="material-icons" onclick="toggleRealtime()">timeline</i> 
+                            Echtzeitaktualisierungen aktivieren
+                            <i id="closeSidebar" class="material-icons" onclick="clearCards(true)">close</i>
+                        </div>
+                </div>
+                <div id="sidebar-main">
+
+                    <span id="noSelection">Keine Station ausgewählt</span>
+                </div>
             </div>
             <div id="fullscreen-data">
                 <div id="fullscreen-top-bar">
-                    <span id="close-fullscreen" onclick="toggleFullscreen()">Schließen</span>
+                    <div class="left">
+                        <span>Zeitraum: </span>
+                        <select id="from-select">
+                            <option value="86400000">1 Tag</option>
+                            <option value="172800000">Letzte 2 Tage</option>
+                            <option value="604800000">Letzte 7 Tage</option>
+                            <option value="2592000000">Letzte 30 Tage</option>
+                            <option value="7776000000">Letzte 3 Monate</option>
+                            <option value="31536000000">Letztes Jahr</option>
+                        </select>
+                        <span>Gruppierung</span>
+                        <select id="interval-select">
+                            <option value="0">Keine</option>
+                            <option value="300">5 Minuten</option>
+                            <option value="600">10 Minuten</option>
+                            <option value="1800">30 Minuten</option>
+                            <option value="3600">1 Stunde</option>
+                            <option value="43200">12 Stunden</option>
+                            <option value="86400">1 Tag</option>
+                            <option value="604800">1 Woche</option>
+                            <option value="2592000">1 Monat</option>
+                        </select>
+                    </div>
+                    <div class="right">
+                        <span id="close-fullscreen" onclick="toggleFullscreen()">Schließen</span>
+                    </div>
                 </div>
                 <div id="fullscreen-chart">
                     <canvas id="fullscreen-chart-canvas">
@@ -48,6 +105,7 @@
         </div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment-with-locales.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
         <script src="socket.io-client/dist/socket.io.js"></script>
         <script src="js/utils.js"></script>

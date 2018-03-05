@@ -42,7 +42,7 @@ $.get(restEndpoint+"/stations", function(data, status){
                 console.log("Clicked:", stations[parseInt(event.target._popup._content.split(" | ")[0])]);
                 selected=stations[parseInt(event.target._popup._content.split(" | ")[0])];
                 $("#sidebar").addClass("open");
-                updateSelected();
+                updateSelected(getMeasurementQuery());
             });
             console.log(marker);
             if(preSelectedStation==stations[i].id){
@@ -50,7 +50,7 @@ $.get(restEndpoint+"/stations", function(data, status){
                 console.log("Clicked:", stations[i]);
                 selected=stations[i];
                 $("#sidebar").addClass("open");
-                updateSelected();
+                updateSelected(getMeasurementQuery());
                 mymap.setView([stations[i].latitude, stations[i].longitude], 11)
             }
         }
@@ -58,10 +58,10 @@ $.get(restEndpoint+"/stations", function(data, status){
 });
 
 function getTypes(measurements, callback){
-    $.get(restEndpoint+"/types", function(data, status){
-        if(status=="success"){
-            console.log(status, data)
-            var allTypes = data;
+    $.get(restEndpoint+"/types", function(t_data, t_status){
+        if(t_status=="success"){
+            console.log("[getTypes]", t_status, t_data)
+            var allTypes = t_data;
             var types = [];
             for(var i=0;i<measurements.length;i++){
                 for(var obj in measurements[i]){
@@ -84,12 +84,16 @@ function getTypes(measurements, callback){
     });
 }
 
-function updateSelected(){
+function updateSelected(query){
     if(selected){
         clearCards(false);
         charts = {};
         //document.getElementById("selected").innerHTML = selected.name;
-        $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
+        var restPath = restEndpoint+"/measurementsByTime/"+selected.id;
+        if(query){
+            restPath = restEndpoint+"/measurementsByTime/"+selected.id+"?"+query;
+        }
+        $.get(restPath, function(data, status){
             console.log("Data:", data, "Status:", status);
             if(status=="success"){
                 measurements=data;
@@ -99,6 +103,8 @@ function updateSelected(){
                         addCard(types[i].name, measurements, types[i]);
                     }
                 });
+            }else {
+                console.log("Error getting measurements");
             }
         });
     }
@@ -106,7 +112,7 @@ function updateSelected(){
 
 function updateData(){
     if(selected){
-        $.get(restEndpoint+"/measurements/"+selected.id, function(data, status){
+        $.get(restEndpoint+"/measurementsByTime/"+selected.id, function(data, status){
             console.log("Data:", data, "Status:", status);
             if(status=="success"){
                 console.log("New Measurements:", data.length-measurements.length, data.slice(measurements.length));
@@ -133,13 +139,13 @@ function toggleCard(event){
 function clearCards(showText){
     if(showText){
         $("#sidebar").removeClass("open");
-        $("#sidebar").html("<span id='noSelection'>Keine Station ausgewählt</span>");
+        $("#sidebar-main").html("<span id='noSelection'>Keine Station ausgewählt</span>");
         $("#noSelection").hide();
         setTimeout(function(){
             $("#noSelection").show();
         }, 50);
     }else{
-        $("#sidebar").html("<span id='activate-fullscreen' onclick='toggleFullscreen()'>Im Vollbildmodus ansehen</span><div id='close-wrapper'><i id='realtime' class='material-icons' onclick='toggleRealtime()'>timeline</i> Echtzeitaktualisierungen aktivieren<i id='closeSidebar' class='material-icons' onclick='clearCards(true)'>close</i></div>");
+        $("#sidebar-main").html("");
     }
 }
 
@@ -174,7 +180,7 @@ function addCard(title, measurements, type){
     `;
     
     card.innerHTML = inner;
-    $("#sidebar").append(card);
+    $("#sidebar-main").append(card);
 
     var lineColor = utils.getRandomColor();
     var backgroundColor = utils.hexToRgba(lineColor, 0.5);
@@ -253,19 +259,21 @@ function buildFullscreenChart(){
     console.log(data);*/
     
     var options = {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
-            yAxes: [
-               /* {
-                    display: true,
-                    labelString: type.name+' in '+type.unit,
-                    ticks: {
-                        // Include a dollar sign in the ticks
-                        callback: function(value, index, values) {
-                            return value.toFixed(2)+" "+type.unit;
-                        }
+            xAxes: [{
+                type:"time",
+                time: {
+                    tooltipFormat: "DD.MM.YYYY  HH:mm:ss",
+                },
+                /*ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, values) {
+                        return new Date(parseInt(value)).toLocaleString();
                     }
                 }*/
-            ]
+            }]
         }
     };
     
@@ -282,18 +290,24 @@ buildFullscreenChart();
 function updateFullscreenMeasurements(measurements, types){
     if(types){
         console.log("[full] ", types);
+        var usedColors = [];
         for(var i=0;i<types.length;i++){
-            var lineColor = utils.getRandomColor();
+            var lineColor;
+            while(usedColors.indexOf(lineColor)>-1){lineColor = utils.getRandomColor();}
+
+            usedColors.push(lineColor);
             //var backgroundColor = hexToRgba(lineColor, 0.5);
 
             var title = types[i].name + " in " + types[i].unit;
-            fullscreenChart.data.labels.push("");
+            //fullscreenChart.data.labels.push("");
             fullscreenChart.data.datasets[types[i].id]={
                 "label":title, 
                 borderColor:lineColor,
                 backgroundColor: "rgba(0, 0, 0, 0)",
-                data: [13.2]
+                data: [],
+                xAxisID: "x-axis-0"
             };
+            fullscreenChart.data.labels=[];
 
             /*fullscreenChart.options.scales.yAxes.push({
                 display: true,
@@ -312,18 +326,53 @@ function updateFullscreenMeasurements(measurements, types){
         console.log("[fullscreen] Measurements:", measurements);
         //return;
         for(var i=0;i<measurements.length;i++){
-            if(new Date(measurements[i].timestamp).getTime()+7*3600000>Date.now()){
+            //if(new Date(measurements[i].timestamp).getTime()+7*24*3600000>Date.now()){
                 for(var obj in measurements[i]){
                     //console.log(obj);
                     if((obj != "timestamp") && (measurements[i].hasOwnProperty(obj))){
-                        fullscreenChart.data.labels.push("");
-                        fullscreenChart.data.datasets[obj].data.push(measurements[i][obj]);
+                        fullscreenChart.data.labels.push(measurements[i].timestamp);
+                        fullscreenChart.data.datasets[obj].data.push({x: new Date(measurements[i].timestamp).getTime(), y: measurements[i][obj]});
                     }
                 }
-            }
+            //}
             
             
         }
         fullscreenChart.update();
     }
+}
+
+bindSelects();
+function bindSelects() {
+    $("#side-from-select").bind("change", function(){
+        $("#from-select").val($(this).val());
+        updateSelected(getMeasurementQuery());
+    });
+
+    $("#from-select").bind("change", function(){
+        $("#side-from-select").val($(this).val());
+        updateSelected(getMeasurementQuery());
+    });
+
+    $("#interval-select").bind("change", function(){
+        $("#side-interval-select").val($(this).val());
+        updateSelected(getMeasurementQuery());
+    });
+
+    $("#side-interval-select").bind("change", function(){
+        $("#interval-select").val($(this).val());
+        updateSelected(getMeasurementQuery());
+    });
+}
+
+function getMeasurementQuery(){
+    var queryString = "";
+    var fromDate = new Date(Date.now() - parseInt($("#from-select").val()));
+    var fromDateString = fromDate.toJSON().replace("T", "%20");
+    queryString+="from="+fromDateString;
+    var interval = $("#interval-select").val();
+    if(interval!="0"){
+        queryString+="&interval="+interval;
+    }
+    return queryString;
 }

@@ -197,10 +197,29 @@ module.exports = {
             });
         });
     },
-    listMeasurements: function(station_id){
+    listMeasurements: function(station_id, params){
         return new Promise(function(resolve, reject){
             if(station_id){
                 var sql = "SELECT * FROM `measurement_values` WHERE station_id="+con.escape(station_id)+" ORDER BY timestamp ASC";
+                if(params){
+                    var where = "";
+                    if(params.until && new Date(params.until) != "Invalid Date"){
+                        where = " WHERE TIMESTAMP(timestamp) < TIMESTAMP("+con.escape(params.until)+")";
+                    }
+                    if(params.from && new Date(params.from) != "Invalid Date"){
+                        if(where==""){where=" WHERE "}
+                        where += "TIMESTAMP(timestamp) > TIMESTAMP("+con.escape(params.from)+")";
+                    }
+                    var groupBy = "";
+                    var avgValue = "value";
+                    if(params.interval){
+                        groupBy = " GROUP BY type, UNIX_TIMESTAMP(timestamp) DIV "+con.escape(params.interval);
+                        avgValue = "AVG(value) AS value";
+                    }
+
+                    var sql = "SELECT station_id, type, "+avgValue+", timestamp FROM `measurement_values`"+ where+groupBy+" ORDER BY `timestamp`  DESC, type ASC";
+                }
+
                 console.log("SQL: "+sql)
                 con.query(sql, function(err, result){
                     if(err){
@@ -211,8 +230,8 @@ module.exports = {
                         for(var i=0;i<result.length;i++){
                             if(measurements.length==0 || new Date(measurements[measurements.length-1].timestamp).getTime()!=new Date(result[i].timestamp).getTime()){
                                 if(measurements.length>0){
-                                    console.log(measurements[measurements.length-1].timestamp, " != ", result[i].timestamp);
-                                    console.log(measurements[measurements.length-1].timestamp!==result[i].timestamp);
+                                    //console.log(measurements[measurements.length-1].timestamp, " != ", result[i].timestamp);
+                                    //console.log(measurements[measurements.length-1].timestamp!==result[i].timestamp);
                                 }
                                 measurements.push({"timestamp":result[i].timestamp});
                             }

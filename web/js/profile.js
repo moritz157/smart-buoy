@@ -109,7 +109,8 @@ function buildMeasurementsPerStationChart(stats){
     };
 
     var options = {
-        backgroundColor: []
+        responsive: true,
+        maintainAspectRatio: false
     }
 
     for(var i=0;i<stats.length;i++){
