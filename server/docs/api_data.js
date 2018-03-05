@@ -97,6 +97,60 @@ define({ "api": [
     "url": "/measurements/:station",
     "title": "getMeasurements",
     "group": "main",
+    "description": "<p>All measurements of a specified station in a specified timespan and grouped by a specified time interval</p>",
+    "parameter": {
+      "fields": {
+        "URL-Parameters": [
+          {
+            "group": "URL-Parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "station",
+            "description": "<p>The station's id</p>"
+          }
+        ],
+        "Query-Parameters": [
+          {
+            "group": "Query-Parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "from",
+            "description": "<p>The start of the selected timespan</p>"
+          },
+          {
+            "group": "Query-Parameters",
+            "type": "Date",
+            "optional": false,
+            "field": "until",
+            "description": "<p>The end of the selected timespan</p>"
+          },
+          {
+            "group": "Query-Parameters",
+            "type": "Number",
+            "optional": false,
+            "field": "interval",
+            "description": "<p>The grouping interval in seconds</p>"
+          },
+          {
+            "group": "Query-Parameters",
+            "type": "String",
+            "optional": false,
+            "field": "format",
+            "description": "<p>The format in which the response is served. Supported alternative formats: csv</p>"
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./app.js",
+    "groupTitle": "main",
+    "name": "GetMeasurementsStation"
+  },
+  {
+    "type": "get",
+    "url": "/measurementsOld/:station",
+    "title": "getMeasurementsOld",
+    "group": "main",
     "description": "<p>Get all measurements of a specified station</p>",
     "parameter": {
       "fields": {
@@ -114,7 +168,7 @@ define({ "api": [
     "version": "0.0.0",
     "filename": "./app.js",
     "groupTitle": "main",
-    "name": "GetMeasurementsStation"
+    "name": "GetMeasurementsoldStation"
   },
   {
     "type": "get",
@@ -198,6 +252,30 @@ define({ "api": [
     "filename": "./app.js",
     "groupTitle": "stations",
     "name": "PostSubmitmeasurement"
+  },
+  {
+    "type": "post",
+    "url": "/stats",
+    "title": "getStats",
+    "group": "user",
+    "description": "<p>Gets the user's stats</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "session_id",
+            "description": ""
+          }
+        ]
+      }
+    },
+    "version": "0.0.0",
+    "filename": "./lib/user-routes.js",
+    "groupTitle": "user",
+    "name": "PostStats"
   },
   {
     "type": "post",

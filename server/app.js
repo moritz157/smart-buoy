@@ -145,7 +145,7 @@ app.post("/stationAuthToken", function(req, res){
 });
 
 /**
- * @api {get} /measurementsOld/:station getMeasurements
+ * @api {get} /measurementsOld/:station getMeasurementsOld
  * @apiGroup main
  * @apiDescription Get all measurements of a specified station
  * 
@@ -180,7 +180,7 @@ app.get("/measurementsOld/:station", function(req, res){
 });
 
 /**
- * @api {get} /measurements/:station
+ * @api {get} /measurements/:station getMeasurements
  * @apiGroup main
  * @apiDescription All measurements of a specified station in a specified timespan and grouped by a specified time interval
  * 
@@ -189,6 +189,7 @@ app.get("/measurementsOld/:station", function(req, res){
  * @apiParam (Query-Parameters) {Date} from The start of the selected timespan
  * @apiParam (Query-Parameters) {Date} until The end of the selected timespan
  * @apiParam (Query-Parameters) {Number} interval The grouping interval in seconds
+ * @apiParam (Query-Parameters) {String} format The format in which the response is served. Supported alternative formats: csv
  */
 app.get("/measurements/:station", function(req, res){
     var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
