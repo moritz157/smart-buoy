@@ -382,3 +382,8 @@ function downloadAsCSV(){
         location.href="http://localhost:8888/measurements/"+selected+"?format=csv"
     }
 }
+
+function toggleAdvancedOptions(){
+    $("#more-ic").toggleClass("active");    
+    $("#advanced-options").toggleClass("hide");
+}

@@ -1,3 +1,5 @@
+var https = require('https');
+var fs = require('fs');
 var express = require("express");
 var app = express();
 
@@ -404,12 +406,31 @@ app.post("/submitMeasurement", function(req, res){
     }
 });
 
-app.listen(config.restPort, function(){
-    logger.log({
-        level: 'info',
-        message: 'Server started on Port: '+config.restPort
+if(process.env.NODE_USE_SSL=='true'){
+
+    var options = {
+        key: fs.readFileSync( process.env.SSL_Key ),
+        cert: fs.readFileSync( process.env.SSL_CRT ),
+        ca: [
+          fs.readFileSync( process.env.SSL_SecureServerCA ),
+          fs.readFileSync( process.env.SSL_AddTrustCA ) 
+        ]
+    };
+    var server = https.createServer( options, app );
+    server.listen(config.restPort, function(){
+        logger.log({
+            level: 'info',
+            message: '(HTTPS-) Server started on Port: '+config.restPort
+        });
     });
-});
+}else{
+    app.listen(config.restPort, function(){
+        logger.log({
+            level: 'info',
+            message: 'Server started on Port: '+config.restPort
+        });
+    });
+}
 
 var web = express();
 web.use('/',express.static("../web/"));

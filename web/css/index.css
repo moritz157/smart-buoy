@@ -36,36 +36,96 @@ a {
 #main {
     position: relative;
     width: 100%;
-    height: calc(100% - 2.6em);
+    height: 100%;
     display: flex;
+    flex-direction: row-reverse;
 }
 
 #map {
     position: relative;
-    width: calc(100% - 15em);
+    width: calc(100% - 19em);
     z-index: 99;
 }
 
 #sidebar {
     height: 100%;
-    min-width: 15em;
-    max-width: 15em;
+    min-width: 19em;
+    max-width: 19em;
     background-color: #f1f1f1;
-    text-align: center;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
-    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
-#sidebar #noSelection {
-    font-weight: bold;
-    color: #a7a7a7;
-    top: 49%;
-    position: relative;
+#sidebar-header {
+    background-color: white;
+    padding: 15px;
+    box-shadow: 0px 0px 5px #00000012;
+}
+
+#sidebar-header h3 {
+    margin: 0px;
 }
 
 #sidebar:not(.open) #sidebar-actions {
     display: none;
+}
+
+#sidebar #sidebar-actions #action-icons-wrapper {
+    display: flex;
+    justify-content: center;
+    /* font-size: 2em !important; */
+    /* background-color: #556bd0; */
+    background-color: #4285f4;
+    color: #ffffffe3;
+    padding: 6px;
+}
+
+#sidebar #sidebar-actions #action-icons-wrapper i {
+    margin-left: 17px;
+    margin-right: 17px;
+    padding: 5px;
+}
+
+#sidebar #sidebar-actions #action-icons-wrapper i.active,
+#sidebar #sidebar-actions #action-icons-wrapper i:active{
+    background: #3b75d6;
+    border-radius: 33px;
+    /* padding: 5px; */
+    color: white;
+}
+
+#sidebar #advanced-options {
+    padding-left: 10px;
+}
+
+#sidebar-main {
+    display: flex;
+    height: max-content;
+    flex-direction: column;
+}
+
+#sidebar-main #noSelection {
+    font-weight: bold;
+    color: #a7a7a7;
+    top: 40%;
+    position: relative;
+    width: 100%;
+    text-align: center;
+}
+
+#sidebar #login {
+    width: 100%;
+    outline: 0;
+    border: 0px;
+    height: 3em;
+    /**background-color: hsl(235, 60%, 52%);**/
+    background-color: hsl(217, 58%, 50%);
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
 }
 
 i.material-icons {

@@ -14,7 +14,7 @@
         rel="stylesheet">
     </head>
     <body>
-        <header>
+        <!--<header>
             <nav>
                 <div class="left">
                     <span>smart buoy</span>
@@ -27,45 +27,61 @@
                 </div>
             </nav>
         </header>
-
+    -->
         <!--Openstreetmap-->
         <div id="main">
             <div id="map" onclick="clearCards(true)">
             </div>
             <div id="sidebar">
-                <div id="sidebar-actions">
-                        <span>Zeitraum: </span>
-                        <select id="side-from-select">
-                            <option value="86400000">1 Tag</option>
-                            <option value="172800000">Letzte 2 Tage</option>
-                            <option value="604800000">Letzte 7 Tage</option>
-                            <option value="2592000000">Letzte 30 Tage</option>
-                            <option value="7776000000">Letzte 3 Monate</option>
-                            <option value="31536000000">Letztes Jahr</option>
-                        </select><br>
-                        <span>Gruppierung</span>
-                        <select id="side-interval-select">
-                            <option value="0">Keine</option>
-                            <option value="300">5 Minuten</option>
-                            <option value="600">10 Minuten</option>
-                            <option value="1800">30 Minuten</option>
-                            <option value="3600">1 Stunde</option>
-                            <option value="43200">12 Stunden</option>
-                            <option value="86400">1 Tag</option>
-                            <option value="604800">1 Woche</option>
-                            <option value="2592000">1 Monat</option>
-                        </select><br>
-                        <span id="activate-fullscreen" onclick="toggleFullscreen()">Im Vollbildmodus ansehen</span><br>
-                        <a href="javascript:downloadAsCSV()">Als CSV herunterladen</a><br>
+                <div class="top">
+                    <div id="sidebar-header">
+                        <h3>smart buoy</h3>
+                    </div>
+                    <div id="sidebar-actions">
+                        <div id="action-icons-wrapper">
+
+                            <i id="realtime" class="material-icons" onclick="toggleRealtime()" title="Echtzeit aktivieren">timeline</i> 
+                            <i id="fullscreen-ic" class="material-icons" onclick="toggleFullscreen()" title="Vollbildmodus">fullscreen</i> 
+                            <i id="download-ic" class="material-icons" onclick="downloadAsCSV()" title="Herunterladen als CSV">file_download</i> 
+                            <i id="more-ic" class="material-icons" onclick="toggleAdvancedOptions()" title="Optionen">more_horiz</i> 
+                        </div>
+                        <div id="advanced-options" class="hide">
+                            <br>
+                            <span>Zeitraum: </span>
+                            <select id="side-from-select">
+                                <option value="86400000">1 Tag</option>
+                                <option value="172800000">Letzte 2 Tage</option>
+                                <option value="604800000">Letzte 7 Tage</option>
+                                <option value="2592000000">Letzte 30 Tage</option>
+                                <option value="7776000000">Letzte 3 Monate</option>
+                                <option value="31536000000">Letztes Jahr</option>
+                            </select><br>
+                            <span>Gruppierung</span>
+                            <select id="side-interval-select">
+                                <option value="0">Keine</option>
+                                <option value="300">5 Minuten</option>
+                                <option value="600">10 Minuten</option>
+                                <option value="1800">30 Minuten</option>
+                                <option value="3600">1 Stunde</option>
+                                <option value="43200">12 Stunden</option>
+                                <option value="86400">1 Tag</option>
+                                <option value="604800">1 Woche</option>
+                                <option value="2592000">1 Monat</option>
+                            </select><br>
+                        </div>
                         <div id="close-wrapper">
-                            <i id="realtime" class="material-icons" onclick="toggleRealtime()">timeline</i> 
-                            Echtzeitaktualisierungen aktivieren
                             <i id="closeSidebar" class="material-icons" onclick="clearCards(true)">close</i>
                         </div>
+                    </div>
+                    <div id="sidebar-main">
+    
+                        <span id="noSelection">Keine Station ausgewählt</span>
+                    </div>
                 </div>
-                <div id="sidebar-main">
-
-                    <span id="noSelection">Keine Station ausgewählt</span>
+                <div class="bottom">
+                    <div id="sidebar-bottom">
+                        <button id="login" onclick="location.href='./login.html'">Login</button>
+                    </div>
                 </div>
             </div>
             <div id="fullscreen-data">

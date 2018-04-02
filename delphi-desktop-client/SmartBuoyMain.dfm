@@ -4407,9 +4407,12 @@ object FSmartBuoyMain: TFSmartBuoyMain
     Top = 144
     Width = 489
     Height = 370
-    Anchors = [akTop, akRight, akBottom]
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 'Werte'
     TabOrder = 0
+    DesignSize = (
+      489
+      370)
     object LblTemp: TLabel
       Left = 88
       Top = 72
@@ -4457,6 +4460,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
       Top = 58
       Width = 443
       Height = 295
+      Anchors = [akLeft, akTop, akRight, akBottom]
       TabOrder = 4
       ColWidths = (
         150
@@ -4468,7 +4472,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
     Top = 8
     Width = 267
     Height = 506
-    Anchors = [akLeft, akTop, akRight, akBottom]
+    Anchors = [akLeft, akTop, akBottom]
     Caption = 'Verbindung'
     TabOrder = 1
     DesignSize = (
@@ -4516,8 +4520,8 @@ object FSmartBuoyMain: TFSmartBuoyMain
     end
   end
   object GBConfig: TGroupBox
-    Left = 721
-    Top = 357
+    Left = 609
+    Top = 351
     Width = 489
     Height = 146
     Anchors = [akTop, akRight]
@@ -4550,7 +4554,7 @@ object FSmartBuoyMain: TFSmartBuoyMain
     Top = 8
     Width = 489
     Height = 130
-    Anchors = [akTop, akRight]
+    Anchors = [akLeft, akTop, akRight]
     Caption = 'Lokale Konfiguration'
     TabOrder = 3
     object LblPath: TLabel
