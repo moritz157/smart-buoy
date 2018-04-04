@@ -66,32 +66,45 @@ void setup() {
     while (1);
   }
   Serial.println(F("initialization done."));
-
+  Serial.println(F("Temperature-sensors..."));
   sensors.begin();
 
+  
   //DHT11
+  Serial.println(F("DHT 11..."));
   dht2.begin();
   
   //LIGHT
+  Serial.println(F("Light..."));
   pinMode(LIGHT_PIN, OUTPUT);
   
   //GPS
+  Serial.println("GPS...");
   softwareSerial.begin(9600);
   //softwareSerial.println("$GPRMC");
 
   //Compass
   //compass.setReg(SET_RESET_REGISTER,0x01);
   //compass.setReg(CONTROL_REGISTER,MOD_CONTINUOUS|ODR_200HZ|RNG_2G);
-  
+  Serial.println(F("Compass..."));
   Wire.begin();
+  Serial.println(F("1"));
   Wire.beginTransmission(compassAddr);
+  Serial.println(F("2"));
   Wire.write(0x0B);
+  Serial.println(F("3"));
   Wire.write(0x01);
+  Serial.println(F("4"));
   Wire.endTransmission();
+  Serial.println(F("5"));
   Wire.beginTransmission(compassAddr);
+  Serial.println(F("6"));
   Wire.write(0x09);
+  Serial.println(F("7"));
   Wire.write(0x01|0x03<<2|0x00<<4);
+  Serial.println(F("8"));
   Wire.endTransmission();
+  Serial.println(F("9"));
   /*if(!mag.begin())
   {
     Serial.println(F("Ooops, no HMC5883 detected ... Check your wiring!"));
@@ -102,10 +115,12 @@ void setup() {
   //Serial.println(freeMemory());
   
   //Shift register
+  Serial.println(F("Shift register..."));
   pinMode(LATCH_PIN, OUTPUT);
   pinMode(CLOCK_PIN, OUTPUT);
   pinMode(DATA_PIN, OUTPUT);
   digitalWrite(LATCH_PIN, HIGH);
+  Serial.println(F("Startup completed"));
 }
 bool saveDataToSD = true;
 bool doInterval = true;

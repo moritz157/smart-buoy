@@ -409,7 +409,7 @@ app.post("/submitMeasurement", function(req, res){
 if(process.env.NODE_USE_SSL=='true'){
 
     var options = {
-        key: fs.readFileSync( process.env.SSL_Key ),
+        key: fs.readFileSync( process.env.SSL_KEY ),
         cert: fs.readFileSync( process.env.SSL_CRT ),
         ca: [
           fs.readFileSync( process.env.SSL_SecureServerCA ),
@@ -423,6 +423,17 @@ if(process.env.NODE_USE_SSL=='true'){
             message: '(HTTPS-) Server started on Port: '+config.restPort
         });
     });
+
+    var web = express();
+    web.use('/',express.static("../web/"));
+
+    var webServer = https.createServer( options, web );
+    webServer.listen(config.webPort, function(){
+        logger.log({
+            level: 'info',
+            message: '(HTTPS-) Webserver started on Port: '+config.webPort
+        });
+    });
 }else{
     app.listen(config.restPort, function(){
         logger.log({
@@ -430,16 +441,18 @@ if(process.env.NODE_USE_SSL=='true'){
             message: 'Server started on Port: '+config.restPort
         });
     });
+
+    var web = express();
+    web.use('/',express.static("../web/"));
+    web.listen(config.webPort, function(){
+        logger.log({
+            level: 'info',
+            message: 'Webserver started on Port: '+config.webPort
+        });
+    });
+
 }
 
-var web = express();
-web.use('/',express.static("../web/"));
-web.listen(config.webPort, function(){
-    logger.log({
-        level: 'info',
-        message: 'Webserver started on Port: '+config.webPort
-    });
-});
 
 var socket = require("./lib/socket.js");
 socket.start(config.socketPort);

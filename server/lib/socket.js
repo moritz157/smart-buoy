@@ -1,8 +1,22 @@
 var logger = require("./log.js").logger;
-
+var fs = require("fs");
 var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+
+if(process.env.NODE_USE_SSL=='true'){
+    var options = {
+        key: fs.readFileSync( process.env.SSL_KEY ),
+        cert: fs.readFileSync( process.env.SSL_CRT ),
+        ca: [
+          fs.readFileSync( process.env.SSL_SecureServerCA ),
+          fs.readFileSync( process.env.SSL_AddTrustCA ) 
+        ]
+    };
+    var https = require('https').createServer(options, app);
+    var io = require('socket.io')(https);
+}else{
+    var http = require('http').Server(app);
+    var io = require('socket.io')(http);
+}
 
 var subscriptions = {};
 
@@ -37,13 +51,21 @@ module.exports = {
                 console.log("a user disconnected");
             })
         });
-
-        http.listen(port, function(){
-            logger.log({
-                level: 'info',
-                message: 'Socket server started on Port: '+port
+        if(process.env.NODE_USE_SSL=='true'){
+            https.listen(port, function(){
+                logger.log({
+                    level: 'info',
+                    message: '(HTTPS-) Socket server started on Port: '+port
+                });
             });
-        });
+        }else{      
+            http.listen(port, function(){
+                logger.log({
+                    level: 'info',
+                    message: 'Socket server started on Port: '+port
+                });
+            });
+        }
     },
 
     submitMeasurement: function(station, measurements){

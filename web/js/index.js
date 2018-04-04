@@ -7,13 +7,13 @@ var selected = undefined;
 var colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#66bb6a", "#9ccc65", "#d4e157", "#ffee58", "#ffca28", "#ffa726", "#ff7043"];
 var charts = {};
 
-var restEndpoint = "";
-if(location.origin == "http://localhost:7777"){
-    restEndpoint = "http://localhost:8888";
-}else if(location.origin.substr(0, 14) == "http://192.168"){
-    restEndpoint = "http://192.168.2.105:8888";
+var restEndpoint = location.protocol;
+if(location.host == "localhost:7777"){
+    restEndpoint += "//localhost:8888";
+}else if(location.host.substr(0, 7) == "192.168"){
+    restEndpoint += "//192.168.2.105:8888";
 }else{
-    restEndpoint = "http://localhost:8888";
+    restEndpoint += "//localhost:8888";
 }
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {

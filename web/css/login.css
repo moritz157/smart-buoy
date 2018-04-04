@@ -1,5 +1,10 @@
+:root {
+    background: linear-gradient(to top right,#923fef, #4fceef);
+    color: white;
+}
+
 h1 {
-    font-family: 'Archivo Black';
+    font-family: sans-serif;
     text-align: center;
 }
 
@@ -14,7 +19,8 @@ h1 {
     width: 18em;
     margin: 2px;
     border-radius: 4px;
-    border: 1px solid gray;
+    border: none;
+    box-shadow: 0px 0px 5px #00000059;
     padding: 10px;
     font-size: 1em;
     padding-top: 10px;
@@ -23,8 +29,8 @@ h1 {
 }
 
 #login-form button {
-    background-color: #59c75e;
-    border-color: #59c75e;
+    background-color: #ff4fa1;
+    border-color: transparent;
     color: white;
     font-weight: bold;
     font-family: Helvetica;
