@@ -9,11 +9,11 @@ var charts = {};
 
 var restEndpoint = location.protocol;
 if(location.host == "localhost:7777"){
-    restEndpoint += "//localhost:8888";
+    restEndpoint += "//localhost:8889";
 }else if(location.host.substr(0, 7) == "192.168"){
-    restEndpoint += "//192.168.2.105:8888";
+    restEndpoint += "//192.168.2.105:8889";
 }else{
-    restEndpoint += "//localhost:8888";
+    restEndpoint += "//localhost:8889";
 }
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
@@ -134,6 +134,12 @@ function updateData(){
 function toggleCard(event){
     console.log($(event.target).parent().parent());
     $(event.target).parent().parent().toggleClass("closed");
+    for(var chart in charts){
+        if(charts[chart].canvas.parentElement.parentElement.classList.contains("closed")==false){
+            charts[chart].resize();
+            console.log("Resizing:", chart);
+        }
+    }
 }
 
 function clearCards(showText){

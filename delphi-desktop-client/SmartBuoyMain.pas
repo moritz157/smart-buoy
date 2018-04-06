@@ -176,6 +176,8 @@ end;
 
 procedure TFSmartBuoyMain.BtnIntervalClick(Sender: TObject);
 begin
+ComPort1.WriteStr('i'#$D#$A);
+{
 if TmrInterval.Enabled=true then
 begin
   BtnInterval.Caption:='Interval starten';
@@ -189,6 +191,7 @@ begin
   BtnInterval.Caption:='Interval stoppen';
   EdtInterval.Enabled:=false;
 end;
+}
 end;
 
 procedure TFSmartBuoyMain.BtnReadSDClick(Sender: TObject);

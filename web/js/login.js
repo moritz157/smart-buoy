@@ -1,10 +1,10 @@
 var restEndpoint = "";
 if(location.origin == "http://localhost:7777"){
-    restEndpoint = "http://localhost:8888";
+    restEndpoint = "https://localhost:8889";
 }else if(location.origin.substr(0, 14) == "http://192.168"){
-    restEndpoint = "http://192.168.2.105:8888";
+    restEndpoint = "https://192.168.2.105:8889";
 }else{
-    restEndpoint = "http://localhost:8888";
+    restEndpoint = "https://localhost:8889";
 }
 
 function login(){

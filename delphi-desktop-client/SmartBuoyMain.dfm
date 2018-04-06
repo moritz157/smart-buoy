@@ -4436,13 +4436,14 @@ object FSmartBuoyMain: TFSmartBuoyMain
       NumbersOnly = True
       TabOrder = 1
       TextHint = 'Interval (Sekunden)'
+      Visible = False
     end
     object BtnInterval: TButton
       Left = 384
       Top = 27
       Width = 91
       Height = 25
-      Caption = 'Interval starten'
+      Caption = 'Toggle Interval'
       TabOrder = 2
       OnClick = BtnIntervalClick
     end

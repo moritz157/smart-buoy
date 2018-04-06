@@ -33,13 +33,12 @@ a {
 }
 
 #main {
-    padding-left: 12px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     position: relative;
-    height: calc(100% - 2.6em);
+    height: 100%;
     z-index: 1;
-    background-color: #fbfbfb
+    background-color: #fbfbfb;
 }
 
 #main #nav {
@@ -57,12 +56,12 @@ a {
 }
 
 #main #content-wrapper {
-    width: calc(100% - 32px);
+    width: 100%;
     position: relative;
     background-color: white;
-    box-shadow: -1px 1px 4px #0404040a;
+    /* box-shadow: -1px 1px 4px #0404040a; */
     padding: 10px;
-    height: calc(100% - 28px - 1.7em - 30px);
+    height: 97%;
 }
 
 #main #content-wrapper > div {
@@ -114,4 +113,49 @@ a {
     flex-wrap: wrap;
     height: 80%;
     align-content: flex-start;
+}
+
+
+
+#sidebar {
+    height: 100%;
+    min-width: 19em;
+    max-width: 19em;
+    background-color: #f1f1f1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    z-index: 1;
+    justify-content: space-between;
+    box-shadow: 0px 0px 7px 0px #00000003;
+}
+
+#sidebar-header {
+    background-color: white;
+    padding: 15px;
+    height: 100%;
+    /**box-shadow: 0px 0px 5px #00000012;**/
+}
+
+#sidebar-header h3 {
+    margin: 0px;
+}
+
+#sidebar-main {
+    display: flex;
+    height: max-content;
+    flex-direction: column;
+}
+
+#sidebar #login, #sidebar #profile {
+    width: 100%;
+    outline: 0;
+    border: 0px;
+    height: 3em;
+    /**background-color: hsl(235, 60%, 52%);**/
+    background-color: hsl(217, 58%, 50%);
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
 }

@@ -417,10 +417,16 @@ if(process.env.NODE_USE_SSL=='true'){
         ]
     };
     var server = https.createServer( options, app );
-    server.listen(config.restPort, function(){
+    server.listen(config.restPort+1, function(){
         logger.log({
             level: 'info',
             message: '(HTTPS-) Server started on Port: '+config.restPort
+        });
+    });
+    app.listen(config.restPort, function(){
+        logger.log({
+            level: 'info',
+            message: 'Server started on Port: '+config.restPort
         });
     });
 

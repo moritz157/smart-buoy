@@ -173,6 +173,7 @@ void loop() {
 }
 
 void evaluateCommand(String bufferString){
+  //Serial.println(bufferString);
   if(bufferString=="a\r"){
     //Serial.print(F("freeMemory()="));
     //Serial.println(freeMemory());

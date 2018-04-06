@@ -210,6 +210,7 @@ module.exports = {
                         if(where==""){where=" WHERE "}
                         where += "TIMESTAMP(timestamp) > TIMESTAMP("+con.escape(params.from)+")";
                     }
+                    where += " AND station_id="+con.escape(station_id);
                     var groupBy = "";
                     var avgValue = "value";
                     if(params.interval){
@@ -225,7 +226,7 @@ module.exports = {
                     if(err){
                         reject(err);
                     }else{
-                        console.log("Result:", result);
+                        //console.log("Result:", result);
                         var measurements=[];
                         for(var i=0;i<result.length;i++){
                             if(measurements.length==0 || new Date(measurements[measurements.length-1].timestamp).getTime()!=new Date(result[i].timestamp).getTime()){
